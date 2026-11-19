@@ -1,0 +1,4 @@
+politica,capital_final_virtual,rendimiento_total_virtual,cambios_posicion,max_drawdown_virtual
+Sin exposición,100000.0,0.0,0,0.0
+Exposición permanente,108962.05146332768,0.0896205146332767,1,-0.3201779971898293
+Q-learning,100000.0,0.0,0,0.0

@@ -1,0 +1,156 @@
+
+BITÁCORA DE INTEGRACIÓN DEL MODELO LSTM-A
+PROYECTO: DEEP LEARNING PARA FINANZAS
+==========================================
+
+1. OBJETIVO
+
+Integrar el modelo de aprendizaje profundo LSTM-A,
+entrenado previamente en Google Colab, con un
+backend desarrollado en FastAPI y una interfaz
+web construida con React y TypeScript.
+
+La finalidad es visualizar los resultados de una
+inferencia histórica sobre el activo BTCUSDT,
+sin realizar operaciones con dinero real.
+
+
+2. TECNOLOGÍAS UTILIZADAS
+
+- Python 3.13.9
+- PyTorch
+- Scikit-learn 1.6.1
+- FastAPI
+- Uvicorn
+- React
+- TypeScript
+- Vite
+- SQLite
+- Visual Studio Code
+- Google Colab
+
+
+3. INTEGRACIÓN DEL MODELO
+
+Se recuperó el modelo LSTM-A previamente entrenado,
+almacenado en el archivo lstm_a_cap11.pt.
+
+También se utilizaron los escaladores guardados
+para transformar las variables de entrada y
+recuperar las predicciones en su escala original.
+
+Se realizó una prueba de inferencia utilizando
+20 rendimientos históricos como entrada.
+
+La prueba se completó correctamente.
+
+
+4. RESULTADOS DE LA INFERENCIA HISTÓRICA
+
+Activo: BTCUSDT
+Modelo: LSTM-A
+
+Fecha de emisión: 2026-11-10
+Fecha objetivo: 2026-11-11
+
+Rendimiento estimado: 0.0008382628
+Rendimiento observado: 0.0029646944
+Error absoluto: 0.0021264316
+
+Dirección estimada: Subida
+
+El modelo estimó correctamente la dirección del
+movimiento observado en esta fecha, aunque
+subestimó su magnitud.
+
+Este resultado individual no demuestra que
+el modelo supere a los modelos base.
+
+
+5. DESARROLLO DEL BACKEND
+
+Se implementó el endpoint:
+
+GET /api/prediccion-lstm
+
+El endpoint permite consultar la evaluación
+histórica del modelo LSTM-A mediante FastAPI.
+
+Se verificó que la respuesta incluyera las
+fechas, los rendimientos, el error absoluto
+y la dirección estimada.
+
+El backend se ejecutó correctamente en:
+
+http://127.0.0.1:8001
+
+
+6. INTEGRACIÓN CON REACT
+
+Se creó el componente PrediccionLSTM.tsx.
+
+Este componente consulta el endpoint del
+backend y muestra los resultados mediante
+tarjetas informativas.
+
+También se actualizaron las direcciones
+de conexión de los componentes existentes
+para utilizar el puerto 8001.
+
+Se comprobó visualmente que las secciones
+del dashboard cargaran correctamente.
+
+
+7. PRUEBA DE COMPILACIÓN
+
+Se ejecutó el comando:
+
+npm.cmd run build
+
+Resultado:
+
+- Compilación TypeScript exitosa.
+- 397 módulos procesados.
+- Tiempo de compilación: 2.05 segundos.
+- Carpeta dist generada correctamente.
+
+Vite mostró una advertencia sobre el tamaño
+de uno de los archivos JavaScript.
+
+Esta advertencia no impidió la compilación.
+
+
+8. LIMITACIONES
+
+Los resultados corresponden a una evaluación
+retrospectiva con datos históricos.
+
+No representan predicciones actuales ni
+garantizan rendimientos futuros.
+
+El sistema utiliza simulaciones académicas
+y no realiza operaciones con dinero real.
+
+El modelo debe evaluarse mediante métricas
+comparativas sobre datos reservados para
+determinar su desempeño frente a los modelos
+base.
+
+
+9. CONCLUSIÓN
+
+Se logró integrar el modelo LSTM-A con el
+backend FastAPI y el frontend React.
+
+Las pruebas realizadas confirmaron que el
+sistema puede recuperar el modelo entrenado,
+generar una inferencia histórica y mostrar
+los resultados en una interfaz web.
+
+Además, se verificó el funcionamiento de
+las secciones del dashboard y se completó
+la compilación del frontend.
+
+Esta integración representa un avance en
+el desarrollo de la plataforma académica
+Deep Learning para Finanzas.

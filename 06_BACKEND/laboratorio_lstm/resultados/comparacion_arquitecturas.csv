@@ -1,0 +1,4 @@
+modelo,hidden_size,num_layers,learning_rate,mejor_epoca,mae_val,rmse_val,ruta_modelo
+LSTM_32,32,1,0.001,19,0.014335425570607185,0.01972876489162445,C:\Users\dtosw\OneDrive\Documents\PROYECTO_DL_FINANZAS\06_BACKEND\laboratorio_lstm\modelos\LSTM_32_experimental.pt
+LSTM_16,16,1,0.001,13,0.014343268238008022,0.0197420883923769,C:\Users\dtosw\OneDrive\Documents\PROYECTO_DL_FINANZAS\06_BACKEND\laboratorio_lstm\modelos\LSTM_16_experimental.pt
+LSTM_64_2CAPAS,64,2,0.001,1,0.014336460269987583,0.019746558740735054,C:\Users\dtosw\OneDrive\Documents\PROYECTO_DL_FINANZAS\06_BACKEND\laboratorio_lstm\modelos\LSTM_64_2CAPAS_experimental.pt
