@@ -1,6 +1,10 @@
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import './App.css'
+
+import TradingSidebar from './TradingSidebar'
+import NeuralNetwork from './NeuralNetwork'
+import NeuralPredictionPanel from './NeuralPredictionPanel'
 import GraficaBitcoin from './GraficaBitcoin'
 import ComparacionModelos from './ComparacionModelos'
 import ResultadosCap09 from './ResultadosCap09'
@@ -23,263 +27,175 @@ import LaboratorioLSTM from './LaboratorioLSTM'
 import AnalisisErroresLSTM from './AnalisisErroresLSTM'
 import ComparacionDireccionalLSTM from './ComparacionDireccionalLSTM'
 
-type Ciclo = {
-  id: number
-  fecha_utc: string
-  estado: string
-  modelo: string
-  observaciones: string
+type Seccion =
+  | 'overview'
+  | 'neural'
+  | 'market'
+  | 'predictions'
+  | 'portfolio'
+  | 'analytics'
+
+const titulos: Record<Seccion, string> = {
+  overview: 'Overview',
+  neural: 'Neural Network',
+  market: 'Market Terminal',
+  predictions: 'AI Predictions',
+  portfolio: 'Virtual Portfolio',
+  analytics: 'Model Analytics',
+}
+
+const descripciones: Record<Seccion, string> = {
+  overview: 'Your financial intelligence workspace.',
+  neural: 'Explore the intelligence behind market predictions.',
+  market: 'Bitcoin market data and price evolution.',
+  predictions: 'AI-powered forecasts and model performance.',
+  portfolio: 'Explore hypothetical outcomes with virtual funds.',
+  analytics: 'Advanced model evaluation and historical results.',
 }
 
 function App() {
-  const [totalCiclos, setTotalCiclos] = useState<number | null>(null)
-  const [errorConexion, setErrorConexion] = useState('')
-  const [ciclos, setCiclos] = useState<Ciclo[]>([])
-
-  useEffect(() => {
-    async function consultarCiclos() {
-      try {
-        const respuesta = await fetch(
-          'http://127.0.0.1:8001/ciclos'
-        )
-
-        if (!respuesta.ok) {
-          throw new Error('No se pudo consultar la API')
-        }
-
-        const datos = await respuesta.json()
-
-        setTotalCiclos(datos.total_mostrados)
-        setCiclos(datos.ciclos)
-        setErrorConexion('')
-      } catch {
-        setErrorConexion('No se pudo conectar con el backend')
-      }
-    }
-
-    consultarCiclos()
-  }, [])
+  const [seccionActual, setSeccionActual] =
+    useState<Seccion>('overview')
 
   return (
-    <main className="dashboard">
+    <div className="trading-layout">
+      <TradingSidebar
+        seccionActual={seccionActual}
+        cambiarSeccion={setSeccionActual}
+      />
 
-      {/* ================================= */}
-      {/* ENCABEZADO DEL DASHBOARD */}
-      {/* ================================= */}
+      <main className="trading-main">
+        <header className="trading-topbar">
+          <div className="trading-topbar-left">
+            <span className="trading-topbar-label">
+              NEURAL FINANCE / TERMINAL
+            </span>
 
-      <header className="dashboard-header">
-        <h1 className="dashboard-title">
-          Deep Learning para Finanzas
-        </h1>
+            <h1>{titulos[seccionActual]}</h1>
+            <p>{descripciones[seccionActual]}</p>
+          </div>
 
-        <h2>Dashboard de análisis financiero</h2>
+          <div className="trading-topbar-right">
+            <span className="trading-market-symbol">
+              BTC / USDT
+            </span>
 
-        <p className="dashboard-subtitle">
-          Sistema académico de análisis de BTC/USDT
-          mediante modelos de aprendizaje profundo.
-        </p>
-      </header>
+            <span className="trading-simulation-badge">
+              ● SIMULATION
+            </span>
+          </div>
+        </header>
 
-      {/* ================================= */}
-      {/* ESTADO DEL PROYECTO */}
-      {/* ================================= */}
+        <div className="trading-content">
+          {seccionActual === 'overview' && (
+            <div className="trading-section">
+              <div className="trading-section-heading">
+                <h2>Market Overview</h2>
+                <p>
+                  Market intelligence and virtual portfolio.
+                </p>
+              </div>
 
-      <section className="dashboard-card">
-        <h2>Estado del proyecto</h2>
+              <div className="trading-overview-grid">
+                <PrecioMEXC />
+                <CapitalVirtual />
+              </div>
 
-        <p>Activo: BTC/USDT</p>
+              <GraficaBitcoin />
+              <PrediccionMEXC />
+            </div>
+          )}
 
-        <p>Modelo seleccionado: LSTM_A</p>
+          {seccionActual === 'neural' && (
+            <div className="trading-section">
+              <div className="trading-section-heading">
+                <h2>Neural Intelligence</h2>
+                <p>
+                  Neural network monitoring and inference.
+                </p>
+              </div>
 
-        <p>
-          Modalidad: simulación con capital virtual
-        </p>
-
-        <p>
-          Operaciones con dinero real: deshabilitadas
-        </p>
-
-        <p>
-          Ciclos registrados en SQLite:{' '}
-          {totalCiclos === null
-            ? 'Consultando...'
-            : totalCiclos}
-        </p>
-
-        {errorConexion && (
-          <p style={{ color: '#f87171' }}>
-            {errorConexion}
-          </p>
-        )}
-      </section>
-
-{/* ================================= */}
-{/* SIMULADOR DE CAPITAL FICTICIO */}
-{/* ================================= */}
-
-<CapitalVirtual />
-
-{/* ================================= */}
-{/* ESCENARIOS HIPOTETICOS LSTM-A */}
-{/* ================================= */}
-
-<EscenariosLSTM />
-<ResumenEstadisticoLSTM />
-<GraficaErroresSimulador />
-<HistorialErroresLSTM />
-<MetricasPrecisionLSTM />
-
-{/* ================================= */}
-{/* LABORATORIO LSTM EXPERIMENTAL */}
-{/* ================================= */}
-
-<LaboratorioLSTM />
-
-{/* ================================= */}
-{/* ANALISIS AVANZADO DEL LABORATORIO */}
-{/* ================================= */}
-
-<AnalisisErroresLSTM />
-
-{/* COMPARACION DIRECCIONAL DEL LABORATORIO */}
-<ComparacionDireccionalLSTM />
-
-{/* ================================= */}
-{/* PRECIO ACTUAL DE BITCOIN EN MEXC */}
-{/* ================================= */}
-
-<PrecioMEXC />
-
-{/* ================================= */}
-{/* PREDICCION LSTM-A CON DATOS MEXC */}
-{/* ================================= */}
-
-<PrediccionMEXC />
-
-
-{/* HISTORIAL DE EVALUACIONES LSTM-A */}
-<EvaluacionesLSTM />
-
-{/* MONITOR DE ACTUALIZACIONES AUTOMÁTICAS */}
+             <NeuralNetwork />
+<NeuralPredictionPanel />
 <MonitorLSTM />
+            </div>
+          )}
 
-{/* GRÁFICA DE EVALUACIONES HISTÓRICAS LSTM-A */}
-<GraficaEvaluacionesLSTM />
+          {seccionActual === 'market' && (
+            <div className="trading-section">
+              <div className="trading-section-heading">
+                <h2>Market Terminal</h2>
+                <p>
+                  Live market monitoring and price history.
+                </p>
+              </div>
 
-{/* ================================= */}
-{/* GRÁFICA HISTÓRICA DE BITCOIN */}
-{/* ================================= */}
+              <PrecioMEXC />
+              <GraficaBitcoin />
+            </div>
+          )}
 
-<GraficaBitcoin />
+          {seccionActual === 'predictions' && (
+            <div className="trading-section">
+              <div className="trading-section-heading">
+                <h2>AI Predictions</h2>
+                <p>
+                  Forecasts, evaluations and performance.
+                </p>
+              </div>
 
-      <ComparacionModelos />
+              <PrediccionMEXC />
+              <EvaluacionesLSTM />
+              <GraficaEvaluacionesLSTM />
+              <MetricasPrecisionLSTM />
+              <PrediccionLSTM />
+            </div>
+          )}
 
-      {/* ================================= */}
-      {/* HISTORIAL DE CICLOS */}
-      {/* ================================= */}
+          {seccionActual === 'portfolio' && (
+            <div className="trading-section">
+              <div className="trading-section-heading">
+                <h2>Virtual Portfolio</h2>
+                <p>
+                  Simulate scenarios without real trades.
+                </p>
+              </div>
 
-      <section className="dashboard-card">
-        <h2>Historial de ciclos del sistema</h2>
+              <CapitalVirtual />
+              <EscenariosLSTM />
+              <ResumenEstadisticoLSTM />
+              <GraficaErroresSimulador />
+              <HistorialErroresLSTM />
+              <TrayectoriasCapital />
+            </div>
+          )}
 
-        <div style={{ overflowX: 'auto' }}>
-          <table className="dashboard-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Fecha</th>
-                <th>Estado</th>
-                <th>Modelo</th>
-                <th>Observaciones</th>
-              </tr>
-            </thead>
+          {seccionActual === 'analytics' && (
+            <div className="trading-section">
+              <div className="trading-section-heading">
+                <h2>Model Analytics</h2>
+                <p>
+                  Explore model research and evaluation.
+                </p>
+              </div>
 
-            <tbody>
-              {ciclos.map((ciclo) => (
-                <tr key={ciclo.id}>
-                  <td>{ciclo.id}</td>
-
-                  <td>
-                    {new Date(
-                      ciclo.fecha_utc
-                    ).toLocaleString('es-MX')}
-                  </td>
-
-                  <td>{ciclo.estado}</td>
-
-                  <td>{ciclo.modelo}</td>
-
-                  <td>{ciclo.observaciones}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+              <ComparacionModelos />
+              <LaboratorioLSTM />
+              <AnalisisErroresLSTM />
+              <ComparacionDireccionalLSTM />
+              <ResultadosCap09 />
+              <ResultadosCap10 />
+              <ResultadosCap11 />
+            </div>
+          )}
         </div>
 
-        {totalCiclos === 0 && (
-          <p>
-            Todavía no hay ciclos registrados.
-          </p>
-        )}
-      </section>
-
-      {/* ================================= */}
-      {/* PRÓXIMOS MÓDULOS */}
-      {/* ================================= */}
-
-      <section className="dashboard-card">
-        <h2>Avance del proyecto</h2>
-
-        <p>
-          Plataforma académica para el análisis financiero
-          mediante aprendizaje profundo y simulaciones históricas.
-        </p>
-
-        <div style={{
-          textAlign: 'left',
-          maxWidth: 650,
-          margin: '20px auto'
-        }}>
-          <p>✅ Capítulo 7: preparación de datos y modelos base.</p>
-          <p>✅ Capítulo 8: entrenamiento de redes MLP y LSTM.</p>
-          <p>✅ Capítulo 9: validación temporal y simulación virtual.</p>
-          <p>✅ Capítulo 10: experimento de aprendizaje por refuerzo.</p>
-          <p>✅ Capítulo 11: evaluación final con datos reservados.</p>
-          <p>✅ Dashboard conectado con FastAPI y SQLite.</p>
-        </div>
-
-        <p style={{ fontSize: '13px', opacity: 0.8 }}>
-          Los experimentos utilizan datos históricos y capital virtual.
-          No se realizan operaciones con dinero real.
-        </p>
-      </section>
-
-      {/* ================================= */}
-      {/* RESULTADOS DEL CAPÍTULO 9 */}
-      {/* ================================= */}
-
-      <ResultadosCap09 />
-
-      {/* ================================= */}
-      {/* RESULTADOS DEL CAPÍTULO 10 */}
-      {/* ================================= */}
-
-      <ResultadosCap10 />
-
-      <TrayectoriasCapital />
-
-      {/* ================================= */}
-      {/* CAPÍTULO 11: EVALUACIÓN FINAL */}
-      {/* ================================= */}
-
-      <ResultadosCap11 />
-
-      {/* ================================= */}
-      {/* PREDICCIÓN HISTÓRICA LSTM-A */}
-      {/* ================================= */}
-
-      <PrediccionLSTM />
-
-    </main>
+        <footer className="trading-footer">
+          NEURAL FINANCE · Experimental AI predictions ·
+          Virtual funds only · No real trading
+        </footer>
+      </main>
+    </div>
   )
 }
 

@@ -219,3 +219,357 @@
   line-height: 1.5;
   overflow-wrap: anywhere;
 }
+
+
+/* =========================================
+   NEURAL FINANCE - TRADING TERMINAL
+   ========================================= */
+
+.trading-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  text-align: left;
+}
+
+.trading-sidebar {
+  width: 258px;
+  min-width: 258px;
+  min-height: 100vh;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #0b111e;
+  border-right: 1px solid var(--border);
+  padding: 28px 16px 20px;
+}
+
+.trading-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 8px 36px;
+}
+
+.trading-brand-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  font-size: 24px;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(135deg, #0284c7, #7c3aed);
+  box-shadow: 0 0 25px rgba(56, 189, 248, .15);
+}
+
+.trading-brand strong {
+  display: block;
+  font-size: 13px;
+  letter-spacing: .06em;
+}
+
+.trading-brand span {
+  display: block;
+  margin-top: 5px;
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: .12em;
+}
+
+.trading-sidebar-label {
+  padding: 0 15px;
+  margin-bottom: 14px;
+  color: #61718b;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .16em;
+}
+
+.trading-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.trading-nav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 15px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  background: transparent;
+  color: #94a3b8;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 500;
+  transition: .2s ease;
+}
+
+.trading-nav-item:hover {
+  color: #fff;
+  background: #172236;
+}
+
+.trading-nav-item.active {
+  color: #e0f2fe;
+  background: linear-gradient(
+    90deg,
+    rgba(14, 165, 233, .15),
+    rgba(99, 102, 241, .06)
+  );
+  border-color: rgba(56, 189, 248, .18);
+}
+
+.trading-nav-icon {
+  width: 20px;
+  font-size: 20px;
+  color: #38bdf8;
+  text-align: center;
+}
+
+.trading-sidebar-bottom {
+  margin-top: auto;
+  padding: 18px 12px 4px;
+  border-top: 1px solid var(--border);
+}
+
+.trading-mode-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #93c5fd;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+}
+
+.trading-mode-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #38bdf8;
+}
+
+.trading-sidebar-bottom p {
+  margin: 14px 0;
+  color: #8a9ab2;
+  font-size: 12px;
+}
+
+.trading-sidebar-bottom small {
+  color: #64748b;
+  font-size: 10px;
+}
+
+.trading-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.trading-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 30px 36px;
+  border-bottom: 1px solid var(--border);
+}
+
+.trading-topbar-label {
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .16em;
+}
+
+.trading-topbar h1 {
+  margin: 8px 0 6px;
+  font-size: 29px;
+  font-weight: 750;
+}
+
+.trading-topbar p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.trading-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.trading-market-symbol {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.trading-simulation-badge {
+  padding: 10px 14px;
+  border-radius: 9px;
+  color: #67e8f9;
+  background: rgba(8, 145, 178, .11);
+  border: 1px solid rgba(8, 145, 178, .2);
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.trading-content {
+  width: 100%;
+  max-width: 1700px;
+  margin: 0 auto;
+  padding: 30px 36px 60px;
+}
+
+.trading-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.trading-section-heading h2 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+.trading-section-heading p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.trading-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.trading-overview-grid > * {
+  min-width: 0;
+}
+
+.trading-feature-placeholder {
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  border: 1px solid rgba(56, 189, 248, .2);
+  border-radius: 18px;
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(56, 189, 248, .08),
+      transparent 60%
+    ),
+    #0e1524;
+  text-align: center;
+}
+
+.trading-feature-icon {
+  color: #38bdf8;
+  font-size: 64px;
+}
+
+.trading-feature-placeholder h3 {
+  margin: 12px 0;
+  font-size: 21px;
+}
+
+.trading-feature-placeholder p {
+  max-width: 400px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.trading-footer {
+  padding: 22px 36px;
+  border-top: 1px solid var(--border);
+  color: #64748b;
+  font-size: 11px;
+  text-align: center;
+}
+
+@media (max-width: 1100px) {
+  .trading-sidebar {
+    width: 215px;
+    min-width: 215px;
+  }
+
+  .trading-topbar,
+  .trading-content {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .trading-overview-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .trading-layout {
+    flex-direction: column;
+  }
+
+  .trading-sidebar {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    min-height: 0;
+    padding: 15px;
+  }
+
+  .trading-brand {
+    padding-bottom: 16px;
+  }
+
+  .trading-sidebar-label,
+  .trading-sidebar-bottom {
+    display: none;
+  }
+
+  .trading-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 5px;
+  }
+
+  .trading-nav-item {
+    flex: 0 0 auto;
+    width: auto;
+    white-space: nowrap;
+  }
+
+  .trading-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px 18px;
+  }
+
+  .trading-content {
+    padding: 24px 16px 40px;
+  }
+
+  .trading-topbar h1 {
+    font-size: 25px;
+  }
+
+  .trading-footer {
+    padding: 20px 16px;
+  }
+}
