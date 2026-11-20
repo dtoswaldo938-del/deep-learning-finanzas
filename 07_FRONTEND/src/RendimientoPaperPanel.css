@@ -1,0 +1,148 @@
+.rp-contenedor {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin: 20px 0;
+  color: #e8f3ff;
+}
+
+.rp-section {
+  padding: 22px;
+  border: 1px solid #2b405e;
+  border-radius: 15px;
+  background: #152137;
+}
+
+.rp-section h3 {
+  margin: 0 0 8px;
+  font-size: 17px;
+  color: #f8fbff;
+}
+
+.rp-section p {
+  color: #9db6d4;
+  font-size: 12px;
+}
+
+.rp-encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.rp-encabezado button {
+  padding: 10px 15px;
+  border: 1px solid #287ca5;
+  border-radius: 8px;
+  background: #103b59;
+  color: #67e8f9;
+  cursor: pointer;
+}
+
+.rp-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.rp-kpi {
+  background: #0e1b30;
+  border: 1px solid #2b405e;
+  border-radius: 12px;
+  padding: 17px;
+  min-width: 0;
+}
+
+.rp-kpi span,
+.rp-kpi small {
+  display: block;
+  color: #a8bedc;
+  font-size: 12px;
+}
+
+.rp-kpi strong {
+  display: block;
+  margin: 10px 0;
+  font-size: clamp(16px, 1.7vw, 23px);
+  overflow-wrap: anywhere;
+}
+
+.rp-positivo { color: #55e5b1 !important; }
+.rp-negativo { color: #fb7185 !important; }
+
+.rp-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 18px;
+}
+
+.rp-grafica {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-top: 12px;
+}
+
+.rp-detalle > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #2b405e;
+}
+
+.rp-detalle span { color: #9db6d4; }
+.rp-detalle b { text-align: right; }
+
+.rp-nota {
+  font-size: 11px !important;
+  line-height: 1.5;
+}
+
+.rp-tabla-scroll {
+  overflow-x: auto;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.rp-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.rp-tabla th,
+.rp-tabla td {
+  text-align: left;
+  padding: 13px 10px;
+  border-bottom: 1px solid #2b405e;
+}
+
+.rp-tabla th {
+  color: #a8bedc;
+  position: sticky;
+  top: 0;
+  background: #152137;
+}
+
+.rp-etiqueta {
+  color: #67e8f9;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.rp-error { color: #fb7185 !important; }
+
+@media (max-width: 1050px) {
+  .rp-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rp-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .rp-kpis { grid-template-columns: 1fr; }
+  .rp-section { padding: 14px; }
+}

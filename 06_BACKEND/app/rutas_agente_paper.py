@@ -314,3 +314,139 @@ async def planificador_agente_paper():
         except Exception:
             _LOG.exception('Agente paper: fallo inesperado del planificador')
         await asyncio.sleep(INTERVALO_REVISION_SEGUNDOS)
+
+
+@router.get("/rendimiento")
+def rendimiento_paper(
+    request: Request,
+    x_agent_key: str | None = Header(default=None),
+    x_neural_local: str | None = Header(default=None),
+):
+    """Resumen contable del paper trading, sin ordenes reales."""
+    _auth(request, x_agent_key, x_neural_local)
+
+    with _LOCK:
+        con = _db()
+        try:
+            cuenta = _estado(con)
+            decisiones = [
+                dict(fila) for fila in con.execute(
+                    "SELECT * FROM agente_paper_decisiones ORDER BY id ASC"
+                )
+            ]
+        finally:
+            con.close()
+
+    saldo = float(cuenta["saldo"])
+    unidades = float(cuenta["unidades"])
+    costo_posicion = 0.0
+    unidades_contables = 0.0
+    ganancia_realizada = 0.0
+    compras = 0
+    ventas = 0
+    operaciones = []
+    curva = [{
+        "fecha": "Capital inicial",
+        "patrimonio": CAPITAL_INICIAL,
+    }]
+
+    for d in decisiones:
+        precio = float(d["precio"] or 0)
+        cantidad = float(d["unidades"] or 0)
+        tipo = d["estado"]
+        ganancia_operacion = None
+
+        if tipo == "COMPRA_PAPER" and precio > 0 and cantidad > 0:
+            costo_posicion += precio * cantidad
+            unidades_contables += cantidad
+            compras += 1
+
+        elif tipo == "VENTA_PAPER" and precio > 0 and cantidad > 0:
+            costo_unitario = (
+                costo_posicion / unidades_contables
+                if unidades_contables > 0 else 0.0
+            )
+            costo_vendido = costo_unitario * cantidad
+            ganancia_operacion = precio * cantidad - costo_vendido
+            ganancia_realizada += ganancia_operacion
+            costo_posicion = max(0.0, costo_posicion - costo_vendido)
+            unidades_contables = max(0.0, unidades_contables - cantidad)
+            ventas += 1
+
+        if tipo in ("COMPRA_PAPER", "VENTA_PAPER"):
+            operaciones.append({
+                "id": d["id"],
+                "fecha": d["fecha_utc"],
+                "activo": d["simbolo"],
+                "tipo": "COMPRA" if tipo == "COMPRA_PAPER" else "VENTA",
+                "cantidad": cantidad,
+                "precio": precio,
+                "importe": precio * cantidad,
+                "saldo_final": d["saldo_final"],
+                "patrimonio_registrado": d["equity_final"],
+                "ganancia_realizada": ganancia_operacion,
+            })
+
+        if d["equity_final"] is not None:
+            curva.append({
+                "fecha": d["fecha_utc"],
+                "patrimonio": float(d["equity_final"]),
+            })
+
+    precio_actual = None
+    fuente = "Sin cotizacion actual"
+    if unidades > 0:
+        try:
+            precio_actual = _precio(cuenta["simbolo"])
+            fuente = "MEXC"
+        except (ValueError, TypeError, KeyError, OSError):
+            for d in reversed(decisiones):
+                if d["precio"] is not None and float(d["precio"]) > 0:
+                    precio_actual = float(d["precio"])
+                    fuente = "Ultimo precio registrado (no en vivo)"
+                    break
+    else:
+        fuente = "Sin posicion abierta"
+
+    valor_posicion = (
+        unidades * precio_actual if precio_actual is not None else None
+    )
+    patrimonio = (
+        saldo + valor_posicion if valor_posicion is not None else
+        saldo if unidades == 0 else None
+    )
+    ganancia_total = (
+        patrimonio - CAPITAL_INICIAL if patrimonio is not None else None
+    )
+    rendimiento = (
+        ganancia_total / CAPITAL_INICIAL * 100
+        if ganancia_total is not None else None
+    )
+    ganancia_no_realizada = (
+        valor_posicion - costo_posicion
+        if valor_posicion is not None else None
+    )
+
+    return {
+        "capital_inicial": CAPITAL_INICIAL,
+        "saldo_disponible": saldo,
+        "patrimonio_actual": patrimonio,
+        "ganancia_total": ganancia_total,
+        "rendimiento_porcentaje": rendimiento,
+        "ganancia_realizada": ganancia_realizada,
+        "ganancia_no_realizada": ganancia_no_realizada,
+        "posicion": {
+            "activo": cuenta["simbolo"],
+            "unidades": unidades,
+            "precio_actual": precio_actual,
+            "valor_actual": valor_posicion,
+            "costo_contable": costo_posicion,
+        },
+        "numero_compras": compras,
+        "numero_ventas": ventas,
+        "total_operaciones": len(operaciones),
+        "operaciones": list(reversed(operaciones)),
+        "curva_historica": curva,
+        "fuente_precio": fuente,
+        "operaciones_reales": False,
+    }

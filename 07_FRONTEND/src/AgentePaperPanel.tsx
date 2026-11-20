@@ -1,3 +1,4 @@
+import RendimientoPaperPanel from './RendimientoPaperPanel'
 import { API_BASE_URL } from './apiConfig'
 import { useCallback, useEffect, useState } from 'react'
 import './AgentePaperPanel.css'
@@ -103,6 +104,7 @@ export default function AgentePaperPanel() {
           <div className="agente-kpi"><span>Patrimonio registrado</span><strong>{numero(ultima?.equity_final ?? datos.capital_inicial)} <em>USDT</em></strong><small>Último valor registrado; no cotización en vivo</small></div>
         </div>
 
+        <RendimientoPaperPanel />
         <div className="agente-section agente-actions">
           <div><h3>Control del agente</h3><p>El planificador solo trabaja cuando el estado es ACTIVO. Pausar o detener no liquida posiciones automáticamente.</p></div>
           <div className="agente-buttons">
