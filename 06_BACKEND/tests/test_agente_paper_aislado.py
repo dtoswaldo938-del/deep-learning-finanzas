@@ -9,8 +9,14 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import patch
 
-from fastapi import HTTPException
+from fastapi import HTTPException, Request
 from app import rutas_agente_paper as agente
+
+
+def solicitud_ficticia():
+    """Peticion HTTP simulada; solo se usa en tests con SQLite temporal."""
+    return Request({"type": "http", "method": "GET", "path": "/", "headers": [],
+                    "client": ("192.0.2.10", 12345), "server": ("testserver", 80)})
 
 
 class PruebasPaperAisladas(unittest.TestCase):
@@ -44,22 +50,22 @@ class PruebasPaperAisladas(unittest.TestCase):
         con.close()
 
     def iniciar(self):
-        return agente.iniciar('TOKEN_SOLO_PRUEBAS')
+        return agente.iniciar(solicitud_ficticia(), x_agent_key='TOKEN_SOLO_PRUEBAS')
 
     def ciclo(self):
-        return agente.ciclo(agente.SolicitudCiclo(simbolo='BTCUSDT'), 'TOKEN_SOLO_PRUEBAS')
+        return agente.ciclo(agente.SolicitudCiclo(simbolo='BTCUSDT'), solicitud_ficticia(), x_agent_key='TOKEN_SOLO_PRUEBAS')
 
     def estado(self):
-        return agente.estado('TOKEN_SOLO_PRUEBAS')
+        return agente.estado(solicitud_ficticia(), x_agent_key='TOKEN_SOLO_PRUEBAS')
 
     def test_01_autenticacion_obligatoria(self):
         with self.assertRaises(HTTPException) as cm:
-            agente.estado(None)
+            agente.estado(solicitud_ficticia(), x_agent_key=None, x_neural_local=None)
         self.assertEqual(cm.exception.status_code, 401)
 
     def test_02_autenticacion_incorrecta(self):
         with self.assertRaises(HTTPException) as cm:
-            agente.iniciar('incorrecta')
+            agente.iniciar(solicitud_ficticia(), x_agent_key='incorrecta')
         self.assertEqual(cm.exception.status_code, 401)
 
     def test_03_no_opera_detenido(self):
@@ -70,7 +76,7 @@ class PruebasPaperAisladas(unittest.TestCase):
 
     def test_04_pausa_bloquea_ciclo(self):
         self.iniciar()
-        agente.pausar('TOKEN_SOLO_PRUEBAS')
+        agente.pausar(solicitud_ficticia(), x_agent_key='TOKEN_SOLO_PRUEBAS')
         with self.assertRaises(HTTPException) as cm:
             self.ciclo()
         self.assertEqual(cm.exception.status_code, 409)
@@ -136,7 +142,7 @@ class PruebasPaperAisladas(unittest.TestCase):
         self.assertFalse(agente._debe_revisar_automaticamente())
         self.iniciar()
         self.assertTrue(agente._debe_revisar_automaticamente())
-        agente.pausar('TOKEN_SOLO_PRUEBAS')
+        agente.pausar(solicitud_ficticia(), x_agent_key='TOKEN_SOLO_PRUEBAS')
         self.assertFalse(agente._debe_revisar_automaticamente())
 
     def test_13_planificador_no_repite_vela(self):
@@ -147,7 +153,7 @@ class PruebasPaperAisladas(unittest.TestCase):
     def test_14_simbolo_distinto_rechazado(self):
         self.iniciar()
         with self.assertRaises(HTTPException) as cm:
-            agente.ciclo(agente.SolicitudCiclo(simbolo='ETHUSDT'), 'TOKEN_SOLO_PRUEBAS')
+            agente.ciclo(agente.SolicitudCiclo(simbolo='ETHUSDT'), solicitud_ficticia(), x_agent_key='TOKEN_SOLO_PRUEBAS')
         self.assertEqual(cm.exception.status_code, 422)
 
 
