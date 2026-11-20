@@ -1,0 +1,20 @@
+{
+  "tipo": "REPLAY_HISTORICO_ACADEMICO",
+  "capital_inicial": 50000.0,
+  "ciclos_lstm": 20,
+  "ciclos_llm_validos": 18,
+  "modelo_llm": "llama3.2:1b",
+  "fecha_inicio": "2026-10-22",
+  "fecha_fin": "2026-11-10",
+  "equity_final_lstm": 50000.0,
+  "equity_final_llm": 50000.0,
+  "equity_final_buy_hold": 49544.8733,
+  "advertencias": [
+    "Evaluacion retrospectiva; no son operaciones reales.",
+    "Replay separado del agente en vivo y su base SQLite.",
+    "La estrategia Buy & Hold usa la misma exposicion maxima del 10%.",
+    "Las decisiones LLM fallidas no se cuentan como validas.",
+    "La regla de perdida diaria del agente en vivo no se replica aqui."
+  ],
+  "nota_recuperacion": "Reintentos de respuestas LLM fallidas. No se modificaron los resultados financieros originales."
+}
