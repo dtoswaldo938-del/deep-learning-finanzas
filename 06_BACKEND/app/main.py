@@ -1,3 +1,4 @@
+from .rutas_integracion_mexc import router as router_integracion_mexc
 from app.rutas_agente_ia import router as router_agente_ia
 from app.rutas_agente_paper import (
     router as router_agente_paper,
@@ -82,6 +83,7 @@ app.include_router(router_activaciones_lstm)
 app.include_router(router_modelos_multiactivo)
 app.include_router(router_entrenamiento_activos)
 app.include_router(router_mercado_mexc)
+app.include_router(router_integracion_mexc)
 app.include_router(router_historico_mexc)
 
 # Permitir que nuestro frontend React consulte el backend.

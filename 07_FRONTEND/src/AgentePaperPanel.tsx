@@ -1,3 +1,5 @@
+import MexcAutenticacionPanel from './MexcAutenticacionPanel'
+import MexcConexionPanel from './MexcConexionPanel'
 import RendimientoPaperPanel from './RendimientoPaperPanel'
 import { API_BASE_URL } from './apiConfig'
 import { useCallback, useEffect, useState } from 'react'
@@ -96,6 +98,8 @@ export default function AgentePaperPanel() {
 
       {error && <p className="agente-alert" role="alert">{error}</p>}
       {mensaje && <p className="agente-message" role="status">{mensaje}</p>}
+      <MexcConexionPanel />
+      <MexcAutenticacionPanel />
       {datos && estado && <>
         <div className="agente-kpis">
           <div className="agente-kpi"><span>Estado actual</span><strong className={`agente-status ${estado.modo.toLowerCase()}`}>{estado.modo}</strong><small>Revisión automática cada {datos.intervalo_revision_segundos / 60} minutos</small></div>
