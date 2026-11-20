@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import './AgentePaperPanel.css'
 
 const API = 'http://127.0.0.1:8001/api/agente-paper'
@@ -28,27 +28,20 @@ function fecha(valor: string | null | undefined) {
 }
 
 export default function AgentePaperPanel() {
-  const [clave, setClave] = useState('')
-  const claveRef = useRef('')
-  const [visible, setVisible] = useState(false)
   const [datos, setDatos] = useState<Respuesta | null>(null)
   const [error, setError] = useState('')
   const [mensaje, setMensaje] = useState('')
   const [cargando, setCargando] = useState(false)
-  const [conectado, setConectado] = useState(false)
 
   const consultar = useCallback(async (silencioso = false) => {
-    const secreto = claveRef.current.trim()
-    if (!secreto) return
     if (!silencioso) setCargando(true)
     try {
-      const r = await fetch(`${API}/estado`, { headers: { 'X-Agent-Key': secreto }, cache: 'no-store' })
-      if (!r.ok) throw new Error(r.status === 401 ? 'Clave incorrecta. Comprueba la clave local.' : `Error HTTP ${r.status} al consultar el agente.`)
+      const r = await fetch(`${API}/estado`, { headers: { 'X-Neural-Local': 'dashboard-v1' }, cache: 'no-store' })
+      if (!r.ok) throw new Error(r.status === 401 ? 'Acceso local no autorizado. Abre el dashboard en 127.0.0.1:5174.' : `Error HTTP ${r.status} al consultar el agente.`)
       const json = await r.json() as Respuesta
       if (json.operaciones_reales !== false) throw new Error('Respuesta inesperada: se requiere modo exclusivamente ficticio.')
-      setDatos(json); setConectado(true); setError('')
+      setDatos(json); setError('')
     } catch (e) {
-      setConectado(false)
       setError(e instanceof Error ? e.message : 'No se pudo consultar el agente.')
     } finally {
       if (!silencioso) setCargando(false)
@@ -56,17 +49,16 @@ export default function AgentePaperPanel() {
   }, [])
 
   useEffect(() => {
-    if (!conectado) return
     const id = window.setInterval(() => { void consultar(true) }, 30000)
     return () => window.clearInterval(id)
-  }, [conectado, consultar])
+  }, [consultar])
 
   async function accion(nombre: 'iniciar' | 'pausar' | 'detener') {
-    if (!claveRef.current.trim() || cargando) return
+    if (cargando) return
     if (nombre === 'iniciar' && !window.confirm('¿Activar el agente automático de simulación? Puede procesar una vela pendiente con capital ficticio.')) return
     setCargando(true); setMensaje(''); setError('')
     try {
-      const r = await fetch(`${API}/${nombre}`, { method: 'POST', headers: { 'X-Agent-Key': claveRef.current.trim() } })
+      const r = await fetch(`${API}/${nombre}`, { method: 'POST', headers: { 'X-Neural-Local': 'dashboard-v1' } })
       if (!r.ok) throw new Error(`No se pudo ${nombre}: HTTP ${r.status}`)
       const resultado = await r.json() as { modo?: string }
       setMensaje(`Comando realizado. Estado: ${resultado.modo ?? 'actualizado'}.`)
@@ -75,9 +67,7 @@ export default function AgentePaperPanel() {
     finally { setCargando(false) }
   }
 
-  function desconectar() {
-    claveRef.current = ''; setClave(''); setDatos(null); setConectado(false); setError(''); setMensaje('')
-  }
+  useEffect(() => { void consultar() }, [consultar])
 
   const estado = datos?.estado
   const ultima = datos?.historial?.[0]
@@ -94,21 +84,17 @@ export default function AgentePaperPanel() {
 
       <div className="agente-access">
         <div className="agente-access-copy">
-          <strong>Acceso local protegido</strong>
-          <span>Introduce la clave X-Agent-Key generada en tu equipo. Se conserva solo en la memoria de esta pestaña, nunca en localStorage.</span>
+          <strong>Demostración local · Sin contraseña</strong>
+          <span>Los controles funcionan desde este dashboard local. El backend mantiene autenticación por clave para accesos externos.</span>
         </div>
         <div className="agente-access-form">
-          <input aria-label="Clave local del agente" type={visible ? 'text' : 'password'} autoComplete="off" spellCheck={false}
-            placeholder="Clave local del agente" value={clave} onChange={e => { setClave(e.target.value); claveRef.current = e.target.value; setConectado(false) }} />
-          <button type="button" onClick={() => setVisible(v => !v)}>{visible ? 'Ocultar' : 'Mostrar'}</button>
-          <button type="button" className="agente-primary" disabled={!clave.trim() || cargando} onClick={() => void consultar()}>{cargando ? 'Cargando…' : 'Conectar'}</button>
-          {conectado && <button type="button" onClick={desconectar}>Desconectar</button>}
+          <button type="button" className="agente-primary" disabled={cargando} onClick={() => void consultar()}>{cargando ? 'Cargando…' : 'Actualizar estado'}</button>
         </div>
       </div>
 
       {error && <p className="agente-alert" role="alert">{error}</p>}
       {mensaje && <p className="agente-message" role="status">{mensaje}</p>}
-      {datos && estado && conectado && <>
+      {datos && estado && <>
         <div className="agente-kpis">
           <div className="agente-kpi"><span>Estado actual</span><strong className={`agente-status ${estado.modo.toLowerCase()}`}>{estado.modo}</strong><small>Revisión automática cada {datos.intervalo_revision_segundos / 60} minutos</small></div>
           <div className="agente-kpi"><span>Saldo disponible</span><strong>{numero(estado.saldo)} <em>USDT</em></strong><small>Cuenta ficticia independiente</small></div>
@@ -138,7 +124,7 @@ export default function AgentePaperPanel() {
           {ultima && <div className="agente-reason"><b>Última justificación:</b> {ultima.motivo}</div>}
         </div>
       </>}
-      {!datos && !error && <div className="agente-empty">Conecta tu clave local para consultar el estado y el historial del agente. El agente permanece bajo el control del backend aunque cierres esta pestaña.</div>}
+      {!datos && !error && <div className="agente-empty">Cargando estado del agente local. Comprueba que el backend esté encendido en 127.0.0.1:8001.</div>}
     </section>
   )
 }

@@ -11,7 +11,7 @@ from datetime import datetime, timezone, date, timedelta
 from pathlib import Path
 from threading import Lock
 
-from fastapi import APIRouter, Header, HTTPException
+from fastapi import APIRouter, Header, HTTPException, Request
 from pydantic import BaseModel, Field
 from app.database.connection import DB_PATH, obtener_conexion
 from app.rutas_agente_ia import analizar
@@ -47,9 +47,31 @@ def _token():
     return TOKEN_PATH.read_text(encoding="utf8").strip()
 
 
-def _auth(x_agent_key: str | None):
-    if not x_agent_key or not secrets.compare_digest(x_agent_key, _token()):
-        raise HTTPException(401, "Clave local del agente incorrecta o ausente")
+# Acceso sin clave SOLO desde el dashboard local autorizado.
+# El encabezado personalizado exige preflight CORS en navegadores.
+_ORIGENES_LOCALES = frozenset({
+    "http://127.0.0.1:5174", "http://localhost:5174",
+    "http://127.0.0.1:5173", "http://localhost:5173",
+})
+
+
+def _auth(request: Request, x_agent_key: str | None, x_neural_local: str | None):
+    # La clave sigue funcionando para acceso administrativo y despliegues externos.
+    if x_agent_key and secrets.compare_digest(x_agent_key, _token()):
+        return
+    origen = request.headers.get("origin", "")
+    host = request.headers.get("host", "").lower()
+    cliente = request.client.host if request.client else ""
+    # Sin Origin no hay acceso anónimo: evita que una petición directa a la API
+    # pueda controlar el agente sin autenticarse.
+    local = (
+        cliente in {"127.0.0.1", "::1"}
+        and host in {"127.0.0.1:8001", "localhost:8001"}
+        and origen in _ORIGENES_LOCALES
+        and x_neural_local == "dashboard-v1"
+    )
+    if not local:
+        raise HTTPException(401, "Acceso restringido: usa el dashboard local o una X-Agent-Key válida")
 
 
 def _db():
@@ -95,8 +117,8 @@ def _precio(simbolo):
 
 
 @router.get('/estado')
-def estado(x_agent_key: str | None = Header(default=None)):
-    _auth(x_agent_key)
+def estado(request: Request, x_agent_key: str | None = Header(default=None), x_neural_local: str | None = Header(default=None)):
+    _auth(request, x_agent_key, x_neural_local)
     with _LOCK:
         con = _db()
         try:
@@ -114,8 +136,8 @@ def estado(x_agent_key: str | None = Header(default=None)):
 
 
 @router.post('/iniciar')
-def iniciar(x_agent_key: str | None = Header(default=None)):
-    _auth(x_agent_key)
+def iniciar(request: Request, x_agent_key: str | None = Header(default=None), x_neural_local: str | None = Header(default=None)):
+    _auth(request, x_agent_key, x_neural_local)
     with _LOCK:
         con = _db()
         try:
@@ -128,8 +150,8 @@ def iniciar(x_agent_key: str | None = Header(default=None)):
 
 
 @router.post('/pausar')
-def pausar(x_agent_key: str | None = Header(default=None)):
-    _auth(x_agent_key)
+def pausar(request: Request, x_agent_key: str | None = Header(default=None), x_neural_local: str | None = Header(default=None)):
+    _auth(request, x_agent_key, x_neural_local)
     with _LOCK:
         con = _db()
         try:
@@ -142,8 +164,8 @@ def pausar(x_agent_key: str | None = Header(default=None)):
 
 
 @router.post('/detener')
-def detener(x_agent_key: str | None = Header(default=None)):
-    _auth(x_agent_key)
+def detener(request: Request, x_agent_key: str | None = Header(default=None), x_neural_local: str | None = Header(default=None)):
+    _auth(request, x_agent_key, x_neural_local)
     with _LOCK:
         con = _db()
         try:
@@ -160,8 +182,8 @@ class SolicitudCiclo(BaseModel):
 
 
 @router.post('/ciclo')
-def ciclo(solicitud: SolicitudCiclo, x_agent_key: str | None = Header(default=None)):
-    _auth(x_agent_key)
+def ciclo(solicitud: SolicitudCiclo, request: Request, x_agent_key: str | None = Header(default=None), x_neural_local: str | None = Header(default=None)):
+    _auth(request, x_agent_key, x_neural_local)
     simbolo = solicitud.simbolo
     # El candado evita duplicaciones en este proceso. SQLite agrega UNIQUE.
     with _LOCK:
@@ -280,7 +302,8 @@ async def planificador_agente_paper():
             if await asyncio.to_thread(_debe_revisar_automaticamente):
                 try:
                     respuesta = await asyncio.to_thread(
-                        ciclo, SolicitudCiclo(simbolo='BTCUSDT'), _token()
+                        ciclo, SolicitudCiclo(simbolo='BTCUSDT'),
+                        Request({'type': 'http', 'headers': [], 'client': ('127.0.0.1', 0)}), _token()
                     )
                     _LOG.info('Agente paper: ciclo automatico %s', respuesta['estado'])
                 except HTTPException as exc:

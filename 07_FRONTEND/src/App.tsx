@@ -397,8 +397,9 @@ function App() {
               <div className="trading-section-heading">
                 <h2>Laboratorio de inteligencia artificial</h2>
                 <p>
-                  Entrena modelos independientes para nuevos activos y consulta
-                  el estado de cada experimento.
+                  Selecciona un activo para consultar su modelo LSTM, métricas de prueba,
+                  predicción experimental y activaciones internas. Entrena únicamente
+                  los activos que todavía no tengan un modelo guardado.
                 </p>
               </div>
               <EntrenamientoNuevoActivo
@@ -416,6 +417,17 @@ function App() {
                 revision={revisionModelos}
                 onSeleccionar={setSimbolo}
               />
+              {tieneModelo ? (
+                <PanelMultiactivo
+                  key={`laboratorio-${simbolo}-${revisionHistorial}-${revisionModelos}`}
+                  simbolo={simbolo}
+                />
+              ) : (
+                <p role="status" style={{ color: '#a7bbd6', marginTop: 16 }}>
+                  {simbolo} todavía no tiene un modelo LSTM disponible.
+                  Puedes entrenarlo desde el formulario de esta sección.
+                </p>
+              )}
             </div>
           )}
           </Suspense>
