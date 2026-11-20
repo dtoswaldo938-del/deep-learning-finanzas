@@ -1,3 +1,4 @@
+import MonitorGeneralMEXC from './MonitorGeneralMEXC'
 import { API_BASE_URL } from './apiConfig'
 
 import { Suspense, lazy, useCallback, useEffect, useState } from 'react'
@@ -249,6 +250,7 @@ function App() {
 
           {seccionActual === 'market' && (
             <div className="trading-section">
+              <MonitorGeneralMEXC />
               <div className="trading-section-heading">
                 <h2>
                   Mercado en tiempo real

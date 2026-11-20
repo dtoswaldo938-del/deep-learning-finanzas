@@ -573,3 +573,19 @@
     padding: 20px 16px;
   }
 }
+
+/* Monitor comparativo MEXC */
+.monitor-mexc-button {
+  background: #123a57 !important;
+  color: #67e8f9 !important;
+  border: 1px solid #256c91 !important;
+  border-radius: 8px !important;
+  padding: 10px 16px !important;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.monitor-mexc-button:hover {
+  background: #195277 !important;
+  border-color: #38bdf8 !important;
+}
