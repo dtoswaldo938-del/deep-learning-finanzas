@@ -1,0 +1,87 @@
+[
+  {
+    "epoca": 1,
+    "mse_train_escalado": 1.0008394718170166,
+    "mse_validacion_escalado": 0.7130464911460876
+  },
+  {
+    "epoca": 2,
+    "mse_train_escalado": 0.9985448122024536,
+    "mse_validacion_escalado": 0.703667163848877
+  },
+  {
+    "epoca": 3,
+    "mse_train_escalado": 0.9972521662712097,
+    "mse_validacion_escalado": 0.6994990110397339
+  },
+  {
+    "epoca": 4,
+    "mse_train_escalado": 0.9962591528892517,
+    "mse_validacion_escalado": 0.7016823291778564
+  },
+  {
+    "epoca": 5,
+    "mse_train_escalado": 0.9954332113265991,
+    "mse_validacion_escalado": 0.698307991027832
+  },
+  {
+    "epoca": 6,
+    "mse_train_escalado": 0.9944689869880676,
+    "mse_validacion_escalado": 0.6997501850128174
+  },
+  {
+    "epoca": 7,
+    "mse_train_escalado": 0.9939385056495667,
+    "mse_validacion_escalado": 0.6952497363090515
+  },
+  {
+    "epoca": 8,
+    "mse_train_escalado": 0.9929346442222595,
+    "mse_validacion_escalado": 0.699064314365387
+  },
+  {
+    "epoca": 9,
+    "mse_train_escalado": 0.9921127557754517,
+    "mse_validacion_escalado": 0.7038430571556091
+  },
+  {
+    "epoca": 10,
+    "mse_train_escalado": 0.9916666150093079,
+    "mse_validacion_escalado": 0.7095229029655457
+  },
+  {
+    "epoca": 11,
+    "mse_train_escalado": 0.9905582070350647,
+    "mse_validacion_escalado": 0.7071716785430908
+  },
+  {
+    "epoca": 12,
+    "mse_train_escalado": 0.9897947311401367,
+    "mse_validacion_escalado": 0.7028715014457703
+  },
+  {
+    "epoca": 13,
+    "mse_train_escalado": 0.9889132380485535,
+    "mse_validacion_escalado": 0.7116169929504395
+  },
+  {
+    "epoca": 14,
+    "mse_train_escalado": 0.9881436228752136,
+    "mse_validacion_escalado": 0.7057969570159912
+  },
+  {
+    "epoca": 15,
+    "mse_train_escalado": 0.9871443510055542,
+    "mse_validacion_escalado": 0.7104515433311462
+  },
+  {
+    "epoca": 16,
+    "mse_train_escalado": 0.9863054752349854,
+    "mse_validacion_escalado": 0.7125506401062012
+  },
+  {
+    "epoca": 17,
+    "mse_train_escalado": 0.9855427145957947,
+    "mse_validacion_escalado": 0.7229653596878052
+  }
+]

@@ -6,6 +6,8 @@ type Seccion =
   | 'predictions'
   | 'portfolio'
   | 'analytics'
+  | 'laboratory'
+  | 'agent'
 
 type Props = {
   seccionActual: Seccion
@@ -17,12 +19,46 @@ const secciones: {
   icono: string
   nombre: string
 }[] = [
-  { id: 'overview', icono: '◈', nombre: 'Overview' },
-  { id: 'neural', icono: '✧', nombre: 'Neural Network' },
-  { id: 'market', icono: '▥', nombre: 'Market Terminal' },
-  { id: 'predictions', icono: '⌁', nombre: 'AI Predictions' },
-  { id: 'portfolio', icono: '◇', nombre: 'Virtual Portfolio' },
-  { id: 'analytics', icono: '▤', nombre: 'Model Analytics' },
+  {
+    id: 'overview',
+    icono: '◈',
+    nombre: 'Resumen general',
+  },
+  {
+    id: 'neural',
+    icono: '✧',
+    nombre: 'Red neuronal',
+  },
+  {
+    id: 'market',
+    icono: '▥',
+    nombre: 'Mercado en tiempo real',
+  },
+  {
+    id: 'predictions',
+    icono: '⌁',
+    nombre: 'Predicciones con IA',
+  },
+  {
+    id: 'portfolio',
+    icono: '◇',
+    nombre: 'Portafolio virtual',
+  },
+  {
+    id: 'analytics',
+    icono: '▤',
+    nombre: 'Análisis de modelos',
+  },
+  {
+    id: 'agent',
+    icono: '◉',
+    nombre: 'Agente IA · Paper',
+  },
+  {
+    id: 'laboratory',
+    icono: '⚙',
+    nombre: 'Laboratorio de IA',
+  },
 ]
 
 export default function TradingSidebar({
@@ -32,35 +68,49 @@ export default function TradingSidebar({
   return (
     <aside className="trading-sidebar">
       <div className="trading-brand">
-        <div className="trading-brand-icon">N</div>
+        <div className="trading-brand-icon">
+          N
+        </div>
 
         <div>
           <strong>NEURAL FINANCE</strong>
-          <span>INTELLIGENCE TERMINAL</span>
+          <span>TERMINAL INTELIGENTE</span>
         </div>
       </div>
 
       <div className="trading-sidebar-label">
-        WORKSPACE
+        PANEL DE NAVEGACIÓN
       </div>
 
-      <nav className="trading-nav" aria-label="Navegación principal">
+      <nav
+        className="trading-nav"
+        aria-label="Navegación principal"
+      >
         {secciones.map((seccion) => (
           <button
             key={seccion.id}
             type="button"
             className={
               'trading-nav-item' +
-              (seccionActual === seccion.id ? ' active' : '')
+              (
+                seccionActual === seccion.id
+                  ? ' active'
+                  : ''
+              )
             }
-            onClick={() => cambiarSeccion(seccion.id)}
+            onClick={() =>
+              cambiarSeccion(seccion.id)
+            }
             aria-current={
-              seccionActual === seccion.id ? 'page' : undefined
+              seccionActual === seccion.id
+                ? 'page'
+                : undefined
             }
           >
             <span className="trading-nav-icon">
               {seccion.icono}
             </span>
+
             <span>{seccion.nombre}</span>
           </button>
         ))}
@@ -69,15 +119,16 @@ export default function TradingSidebar({
       <div className="trading-sidebar-bottom">
         <div className="trading-mode-indicator">
           <span className="trading-mode-dot" />
-          SIMULATION MODE
+          MODO SIMULACIÓN
         </div>
 
         <p>
-          Market intelligence powered by neural networks.
+          Inteligencia financiera impulsada
+          por redes neuronales.
         </p>
 
         <small>
-          Virtual funds only · No real trading
+          Capital ficticio · Sin operaciones reales
         </small>
       </div>
     </aside>

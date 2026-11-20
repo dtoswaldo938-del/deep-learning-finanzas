@@ -92,10 +92,10 @@ export default function NeuralPredictionPanel() {
       <div className="neural-prediction-heading">
         <div>
           <span className="neural-prediction-eyebrow">
-            AI INFERENCE / DAILY HORIZON
+            INFERENCIA DE IA / HORIZONTE DIARIO
           </span>
 
-          <h3>LSTM Intelligence</h3>
+          <h3>Inteligencia LSTM</h3>
 
           <p>
             Predicciones experimentales generadas
@@ -116,7 +116,7 @@ export default function NeuralPredictionPanel() {
 
       {!datos && !error && (
         <p className="neural-prediction-loading">
-          Loading neural inference...
+          Cargando inferencia neuronal...
         </p>
       )}
 
@@ -130,7 +130,7 @@ export default function NeuralPredictionPanel() {
         <>
           <div className="neural-prediction-main">
             <div>
-              <span>EXPECTED DAILY RETURN</span>
+              <span>RENDIMIENTO DIARIO ESTIMADO</span>
 
               <strong
                 className={
@@ -151,40 +151,63 @@ export default function NeuralPredictionPanel() {
             </div>
 
             <div className="neural-prediction-state">
-              <span>STATUS</span>
+              <span>ESTADO</span>
 
               <strong>
                 {prediccion.estado_evaluacion === 'pendiente'
-                  ? 'PENDING EVALUATION'
-                  : 'EVALUATED'}
+                  ? 'PENDIENTE DE EVALUACIÓN'
+                  : 'EVALUADA'}
               </strong>
+            </div>
+          </div>
+
+          <div className="neural-prediction-details" aria-label="Resultado observado y comparación histórica">
+            <div>
+              <span>RENDIMIENTO OBSERVADO</span>
+              <strong>
+                {prediccion.rendimiento_observado_porcentaje === null
+                  ? 'Pendiente de observación'
+                  : `${prediccion.rendimiento_observado_porcentaje > 0 ? '+' : ''}${prediccion.rendimiento_observado_porcentaje.toFixed(4)} %`}
+              </strong>
+            </div>
+            <div>
+              <span>ERROR ABSOLUTO DE ESTA PREDICCIÓN</span>
+              <strong>
+                {prediccion.rendimiento_observado_porcentaje === null
+                  ? 'No disponible'
+                  : `${Math.abs(prediccion.rendimiento_estimado_porcentaje - prediccion.rendimiento_observado_porcentaje).toFixed(4)} puntos porcentuales`}
+              </strong>
+            </div>
+            <div>
+              <span>DIRECCIÓN ACERTADA</span>
+              <strong>{prediccion.direccion_correcta === null ? 'Pendiente' : prediccion.direccion_correcta ? 'Sí' : 'No'}</strong>
             </div>
           </div>
 
           <div className="neural-prediction-details">
             <div>
-              <span>ISSUED</span>
+              <span>FECHA DE EMISIÓN</span>
               <strong>
                 {formatearFecha(prediccion.fecha_emision)}
               </strong>
             </div>
 
             <div>
-              <span>TARGET DATE</span>
+              <span>FECHA OBJETIVO</span>
               <strong>
                 {formatearFecha(prediccion.fecha_objetivo)}
               </strong>
             </div>
 
             <div>
-              <span>RECORDED PREDICTIONS</span>
+              <span>PREDICCIONES REGISTRADAS</span>
               <strong>
                 {datos?.resumen.total_predicciones ?? 0}
               </strong>
             </div>
 
             <div>
-              <span>EVALUATED</span>
+              <span>EVALUADA</span>
               <strong>
                 {datos?.resumen.total_evaluadas ?? 0}
               </strong>
@@ -194,10 +217,10 @@ export default function NeuralPredictionPanel() {
       )}
 
       <p className="neural-prediction-disclaimer">
-        Experimental daily prediction based on historical
-        market data. Market prices update every second,
-        but LSTM predictions follow a daily horizon.
-        Virtual simulation only. No real trading.
+        Predicción diaria experimental basada en datos históricos.
+        Las cotizaciones pueden actualizarse con mayor frecuencia,
+        pero las predicciones LSTM tienen horizonte diario.
+        Simulación académica; no se realizan operaciones reales.
       </p>
     </section>
   )

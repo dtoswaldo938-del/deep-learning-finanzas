@@ -1,6 +1,16 @@
+from app.rutas_agente_ia import router as router_agente_ia
+from app.rutas_agente_paper import (
+    router as router_agente_paper,
+    planificador_agente_paper,
+)
+from app.rutas_entrenamiento_activos import router as router_entrenamiento_activos
+from app.rutas_modelos_multiactivo import router as router_modelos_multiactivo
+from app.rutas_historico_mexc import router as router_historico_mexc
+from app.rutas_mercado_mexc import router as router_mercado_mexc
 import asyncio
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
+from app.rutas_activaciones_lstm import router as router_activaciones_lstm
 from historial_capital_virtual import consultar_historial_capital
 from simulacion_lstm_virtual import consultar_escenarios_lstm
 from fastapi import FastAPI, HTTPException
@@ -41,15 +51,18 @@ async def lifespan(app: FastAPI):
         ejecutar_actualizacion_automatica()
     )
 
+    tarea_agente_paper = asyncio.create_task(planificador_agente_paper())
+
     try:
         yield
     finally:
+        tarea_agente_paper.cancel()
         tarea_actualizacion.cancel()
-
-        try:
-            await tarea_actualizacion
-        except asyncio.CancelledError:
-            pass
+        for tarea in (tarea_agente_paper, tarea_actualizacion):
+            try:
+                await tarea
+            except asyncio.CancelledError:
+                pass
 
 
 
@@ -63,6 +76,14 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.include_router(router_agente_ia)
+app.include_router(router_agente_paper)
+app.include_router(router_activaciones_lstm)
+app.include_router(router_modelos_multiactivo)
+app.include_router(router_entrenamiento_activos)
+app.include_router(router_mercado_mexc)
+app.include_router(router_historico_mexc)
+
 # Permitir que nuestro frontend React consulte el backend.
 app.add_middleware(
     CORSMiddleware,
@@ -75,7 +96,7 @@ allow_origins=[
 ],
 
     allow_credentials=False,
-    allow_methods=["GET"],
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 

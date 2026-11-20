@@ -1,99 +1,203 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
 
 type PrecioMEXCData = {
-  status: string;
-  fuente: string;
-  activo: string;
-  precio: number;
-  fecha_consulta_utc: string;
-  operaciones_reales: boolean;
-};
+  status: string
+  fuente: string
+  activo: string
+  precio: number
+  fecha_consulta_utc: string
+  operaciones_reales: boolean
+}
 
-export default function PrecioMEXC() {
-  const [datos, setDatos] = useState<PrecioMEXCData | null>(null);
-  const [error, setError] = useState<string | null>(null);
+type Props = {
+  simbolo?: string
+}
+
+const API = 'http://127.0.0.1:8001'
+
+export default function PrecioMEXC({
+  simbolo = 'BTCUSDT',
+}: Props) {
+  const [datos, setDatos] =
+    useState<PrecioMEXCData | null>(null)
+
+  const [error, setError] = useState('')
+  const [cargando, setCargando] = useState(true)
 
   useEffect(() => {
-    let activo = true;
-    let controlador: AbortController | null = null;
-    let temporizador: ReturnType<typeof setTimeout>;
+    let activo = true
+    let consultando = false
+    let temporizador: ReturnType<typeof setTimeout>
+
+    const controlador = new AbortController()
+
+    setDatos(null)
+    setError('')
+    setCargando(true)
 
     async function actualizarPrecio() {
-      controlador = new AbortController();
+      if (!activo || consultando) return
+
+      consultando = true
 
       try {
         const respuesta = await fetch(
-          "http://127.0.0.1:8001/api/mexc/precio-actual",
-          { signal: controlador.signal, cache: "no-store" }
-        );
+          `${API}/api/mexc/precio-por-simbolo?simbolo=${encodeURIComponent(simbolo)}`,
+          {
+            signal: controlador.signal,
+            cache: 'no-store',
+          }
+        )
 
         if (!respuesta.ok) {
-          throw new Error("No fue posible consultar MEXC.");
+          throw new Error(
+            'No fue posible consultar el precio.'
+          )
         }
 
-        const resultado: PrecioMEXCData = await respuesta.json();
+        const resultado: PrecioMEXCData =
+          await respuesta.json()
+
+        if (
+          resultado.status !== 'ok' ||
+          resultado.activo !== simbolo ||
+          !Number.isFinite(Number(resultado.precio))
+        ) {
+          throw new Error(
+            'MEXC devolvió información inesperada.'
+          )
+        }
 
         if (activo) {
-          setDatos(resultado);
-          setError(null);
+          setDatos(resultado)
+          setError('')
         }
       } catch (err) {
-        if (activo && !(err instanceof Error && err.name === "AbortError")) {
-          setError("Sin conexión con MEXC o FastAPI.");
+        if (
+          activo &&
+          !(err instanceof Error &&
+            err.name === 'AbortError')
+        ) {
+          setError(
+            'No fue posible actualizar el precio desde MEXC.'
+          )
         }
       } finally {
+        consultando = false
+
         if (activo) {
-          temporizador = setTimeout(actualizarPrecio, 1000);
+          setCargando(false)
+
+          temporizador = setTimeout(
+            actualizarPrecio,
+            1000
+          )
         }
       }
     }
 
-    actualizarPrecio();
+    void actualizarPrecio()
 
     return () => {
-      activo = false;
-      controlador?.abort();
-      clearTimeout(temporizador);
-    };
-  }, []);
+      activo = false
+      controlador.abort()
+      clearTimeout(temporizador)
+    }
+  }, [simbolo])
+
+  const nombreActivo =
+    simbolo.endsWith('USDT')
+      ? `${simbolo.slice(0, -4)}/USDT`
+      : simbolo
 
   return (
-    <section style={{
-      background: "#111827",
-      color: "#ffffff",
-      padding: "24px",
-      borderRadius: "16px",
-      marginBottom: "24px"
-    }}>
-      <h2>Precio de Bitcoin · MEXC</h2>
+    <section
+      style={{
+        background: '#111827',
+        color: '#ffffff',
+        padding: 24,
+        borderRadius: 16,
+        marginBottom: 24,
+        border: '1px solid #263954',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 12,
+        }}
+      >
+        <h2>
+          Precio de {nombreActivo} · MEXC
+        </h2>
 
-      {datos && !error ? (
+        <span
+          style={{
+            color: error ? '#fca5a5' : '#7dd3fc',
+            fontSize: 12,
+          }}
+        >
+          {error
+            ? 'Conexión interrumpida'
+            : cargando
+              ? 'Consultando...'
+              : 'Datos de MEXC'}
+        </span>
+      </div>
+
+      {datos && (
         <>
-          <h1 style={{ color: "#38bdf8", fontSize: "36px" }}>
-            {datos.precio.toLocaleString("en-US", {
+          <h1
+            style={{
+              color: '#38bdf8',
+              fontSize: 36,
+              margin: '14px 0',
+              overflowWrap: 'anywhere',
+            }}
+          >
+            {datos.precio.toLocaleString('es-MX', {
               minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            })} USDT
+              maximumFractionDigits: 10,
+            })}{' '}
+            USDT
           </h1>
 
           <p>Activo: {datos.activo}</p>
           <p>Fuente: {datos.fuente}</p>
+
           <p>
-            Última consulta:{" "}
-            {new Date(datos.fecha_consulta_utc).toLocaleString("es-MX")}
+            Última consulta:{' '}
+            {new Date(
+              datos.fecha_consulta_utc
+            ).toLocaleString('es-MX')}
           </p>
-          <p>Actualización automática aproximada cada segundo</p>
+
+          <p>
+            Actualización aproximada cada segundo.
+          </p>
         </>
-      ) : !error ? (
-        <p>Consultando MEXC...</p>
-      ) : null}
+      )}
+
+      {cargando && !datos && (
+        <p>Consultando el precio del activo...</p>
+      )}
 
       {error && (
-        <p style={{ color: "#f87171" }}>
-          {error} {datos && "El último precio recibido puede estar desactualizado."}
+        <p style={{ color: '#f87171' }}>
+          {error}
+          {datos &&
+            ' El último precio recibido podría estar desactualizado.'}
         </p>
       )}
+
+      <small style={{ color: '#8ba8cf' }}>
+        Información de mercado. No se realizan
+        operaciones reales.
+      </small>
     </section>
-  );
+  )
 }

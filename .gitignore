@@ -57,3 +57,63 @@ Thumbs.db
 
 .vscode/
 .idea/
+
+# Clave privada local del agente
+06_BACKEND/data/agente_paper_token.txt
+
+# Respaldos locales del agente
+RESPALDO_AGENTE_*/
+*.RESPALDO_*
+BLOQUE_*.zip
+
+# ============================================
+# NEURAL FINANCE - ARCHIVOS LOCALES Y PRIVADOS
+# ============================================
+
+# Respaldos y revisiones
+RESPALDO*/
+REVISION*/
+*.bak
+*.bak_*
+*.zip
+*_BACKUP_*.txt
+*_ANTES_*.bak
+
+# Archivos temporales de actualizaciones
+LEEME_BLOQUE_*.txt
+
+# Credenciales y secretos
+.env
+.env.*
+!.env.example
+*token*.txt
+*secret*.txt
+*clave*.txt
+
+# Bases de datos
+*.db
+*.sqlite
+*.sqlite3
+
+# Entornos y compilaciones
+.venv*/
+venv/
+node_modules/
+dist/
+__pycache__/
+*.pyc
+
+# Archivos locales de respaldo
+NeuralNetwork_173_6.tsx
+
+
+# Actualizaciones historicas dentro del backend
+06_BACKEND/BLOQUE_*/
+
+# Datos locales y modelos de gran tamano
+06_BACKEND/datos_entrenamiento_original/
+06_BACKEND/datos_multiactivo/
+
+# Archivos auxiliares antiguos
+07_FRONTEND/src/*BACKUP*
+06_BACKEND/app/*.bak*

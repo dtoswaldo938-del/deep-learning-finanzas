@@ -1,0 +1,427 @@
+
+.architecture-explorer {
+  margin-top: 24px;
+  padding: 28px;
+  border: 1px solid #253757;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #0d1627, #11172b);
+  color: #f8fafc;
+}
+
+.architecture-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.architecture-eyebrow {
+  display: block;
+  margin-bottom: 10px;
+  color: #67d5ff;
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+.architecture-header h2 {
+  margin: 0 0 10px;
+  font-size: 25px;
+}
+
+.architecture-header p,
+.architecture-detail-heading p {
+  color: #93a9c8;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.architecture-model-tag {
+  flex-shrink: 0;
+  padding: 10px 14px;
+  border: 1px solid #275f70;
+  border-radius: 9px;
+  background: #102c36;
+  color: #67e8f9;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.architecture-flow {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  margin: 28px 0;
+}
+
+.architecture-flow-part {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+}
+
+.architecture-flow-part:last-child {
+  flex: 1;
+}
+
+.architecture-stage {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  min-height: 116px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 9px;
+  padding: 18px;
+  border: 1px solid #283a58;
+  border-radius: 12px;
+  background: #101e33;
+  color: #e2e8f0;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s,
+    transform 0.2s;
+}
+
+.architecture-stage:hover {
+  transform: translateY(-2px);
+  border-color: #4a779d;
+}
+
+.architecture-stage.active {
+  border-color: #38bdf8;
+  background: #15314c;
+  box-shadow: 0 0 24px rgba(34, 211, 238, 0.1);
+}
+
+.architecture-stage-number {
+  color: #68caff;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+}
+
+.architecture-stage strong {
+  font-size: 16px;
+}
+
+.architecture-stage small {
+  color: #8fa9c9;
+  font-size: 12px;
+}
+
+.architecture-flow-arrow {
+  color: #55c6ef;
+  font-size: 25px;
+}
+
+.architecture-overview {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.architecture-overview > div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 17px;
+  border: 1px solid #263a57;
+  border-radius: 11px;
+  background: #101e33;
+}
+
+.architecture-overview span,
+.architecture-unit-inspector span {
+  color: #83a0c3;
+  font-size: 10px;
+  letter-spacing: 1.2px;
+}
+
+.architecture-overview strong {
+  font-size: 20px;
+}
+
+.architecture-detail {
+  padding: 25px;
+  border: 1px solid #233650;
+  border-radius: 14px;
+  background: #091323;
+}
+
+.architecture-detail-heading > span {
+  color: #67d5ff;
+  font-size: 10px;
+  letter-spacing: 1.8px;
+}
+
+.architecture-detail-heading h3 {
+  margin: 10px 0;
+  font-size: 21px;
+}
+
+.architecture-timeline {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 12px;
+  margin: 28px 0;
+}
+
+.architecture-timestep {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 5px;
+  border: 1px solid #254263;
+  border-radius: 10px;
+  background: #10243b;
+}
+
+.architecture-timestep span {
+  color: #a4ddff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.architecture-timestep small {
+  color: #7695b8;
+  font-size: 10px;
+}
+
+.architecture-timestep-bar {
+  width: 8px;
+  height: 30px;
+  border-radius: 6px;
+  background: linear-gradient(#22d3ee, #6366f1);
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.3);
+}
+
+.architecture-explanation {
+  padding: 18px;
+  border: 1px solid #263b5a;
+  border-radius: 11px;
+  background: #101e33;
+}
+
+.architecture-explanation strong {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.architecture-explanation code {
+  color: #67e8f9;
+  font-size: 13px;
+}
+
+.architecture-explanation p,
+.architecture-disclaimer {
+  color: #91a6c6;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.architecture-hidden-grid {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 11px;
+  margin: 25px 0;
+}
+
+.architecture-hidden-unit {
+  display: flex;
+  min-width: 0;
+  min-height: 78px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 11px;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.architecture-hidden-unit:hover {
+  transform: translateY(-3px);
+}
+
+.architecture-hidden-unit.selected {
+  border: 2px solid #ffffff;
+}
+
+.architecture-hidden-unit span {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.architecture-hidden-unit strong {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.architecture-unit-inspector {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.architecture-unit-inspector > div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 10px;
+  padding: 17px;
+  border: 1px solid #263a57;
+  border-radius: 11px;
+  background: #101e33;
+}
+
+.architecture-unit-inspector strong {
+  font-size: 16px;
+  overflow-wrap: anywhere;
+}
+
+.architecture-output {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin: 35px 0;
+}
+
+.architecture-output-node,
+.architecture-output-result {
+  display: flex;
+  min-width: 0;
+  min-height: 130px;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #315475;
+  border-radius: 13px;
+  background: #10243b;
+  text-align: center;
+}
+
+.architecture-output-node span,
+.architecture-output-result span {
+  color: #89b2d1;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.architecture-output-node strong {
+  font-size: 25px;
+}
+
+.architecture-output-result {
+  border-color: #277f91;
+  background: #10323e;
+}
+
+.architecture-output-result strong {
+  color: #67e8f9;
+  font-size: 29px;
+  font-variant-numeric: tabular-nums;
+}
+
+.architecture-output-result small {
+  color: #a5c5d2;
+}
+
+.architecture-output-arrow {
+  color: #67e8f9;
+  font-size: 28px;
+}
+
+.architecture-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 22px;
+  color: #7692b7;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.architecture-message {
+  color: #9db1cf;
+}
+
+.architecture-error {
+  color: #fda4af;
+}
+
+@media (max-width: 900px) {
+  .architecture-flow {
+    flex-direction: column;
+  }
+
+  .architecture-flow-part {
+    width: 100%;
+  }
+
+  .architecture-flow-arrow {
+    display: none;
+  }
+
+  .architecture-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .architecture-timeline {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .architecture-hidden-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .architecture-output {
+    flex-direction: column;
+  }
+
+  .architecture-output-node,
+  .architecture-output-result {
+    width: 100%;
+  }
+
+  .architecture-output-arrow {
+    transform: rotate(90deg);
+  }
+}
+
+@media (max-width: 520px) {
+  .architecture-explorer {
+    padding: 17px;
+  }
+
+  .architecture-header {
+    flex-direction: column;
+  }
+
+  .architecture-detail {
+    padding: 15px;
+  }
+
+  .architecture-timeline {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .architecture-hidden-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .architecture-unit-inspector {
+    grid-template-columns: 1fr;
+  }
+}
