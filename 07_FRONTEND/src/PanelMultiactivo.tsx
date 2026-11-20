@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './apiConfig'
 import { useEffect, useState } from 'react'
 import type { CSSProperties } from 'react'
 
@@ -26,7 +27,7 @@ type Inferencia = {
   datos_actualizados_en_tiempo_real: boolean
 }
 type Resultado = { inferencia: Inferencia; evaluacion: Evaluacion }
-const API = 'http://127.0.0.1:8001'
+const API = `${API_BASE_URL}`
 const formato = (valor: number, decimales = 4) => Number.isFinite(valor) ? valor.toFixed(decimales) : '—'
 
 export default function PanelMultiactivo({ simbolo }: { simbolo: string }) {

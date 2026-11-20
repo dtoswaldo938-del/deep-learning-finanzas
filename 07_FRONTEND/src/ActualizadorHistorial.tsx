@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './apiConfig'
 import { useEffect, useState } from 'react'
 
 type Vigencia = {
@@ -10,7 +11,7 @@ type Vigencia = {
   vigente: boolean
 }
 type Respuesta = { status: string; mensaje: string; velas_agregadas: number; vigencia: Vigencia }
-const API = 'http://127.0.0.1:8001'
+const API = `${API_BASE_URL}`
 
 export default function ActualizadorHistorial({ simbolo, onActualizado }: { simbolo: string; onActualizado: () => void }) {
   const [datos, setDatos] = useState<Vigencia | null>(null)

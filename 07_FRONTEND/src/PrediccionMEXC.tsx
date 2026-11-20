@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './apiConfig'
 
 import { useEffect, useState } from 'react'
 
@@ -17,7 +18,7 @@ type PrediccionMEXCData = {
 }
 
 const URL_API =
-  'http://127.0.0.1:8001/api/mexc/prediccion-lstm'
+  `${API_BASE_URL}/api/mexc/prediccion-lstm`
 
 function PrediccionMEXC() {
   const [prediccion, setPrediccion] =

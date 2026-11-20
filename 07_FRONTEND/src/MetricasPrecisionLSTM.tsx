@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './apiConfig'
 
 import { useEffect, useState } from 'react'
 
@@ -20,7 +21,7 @@ type Metricas = {
 }
 
 const API_URL =
-  'http://127.0.0.1:8001/api/simulador/metricas-precision-lstm'
+  `${API_BASE_URL}/api/simulador/metricas-precision-lstm`
 
 const INTERVALO_ACTUALIZACION = 60000
 

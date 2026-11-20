@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './apiConfig'
 
 import { useEffect, useState } from 'react'
 import {
@@ -34,7 +35,7 @@ function TrayectoriasCapital() {
     async function cargarTrayectorias() {
       try {
         const respuesta = await fetch(
-          'http://127.0.0.1:8001/cap10/trayectorias'
+          `${API_BASE_URL}/cap10/trayectorias`
         )
 
         if (!respuesta.ok) {

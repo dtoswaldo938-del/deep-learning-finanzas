@@ -1,6 +1,7 @@
+import { API_BASE_URL } from './apiConfig'
 import { useEffect, useState } from 'react'
 
-const API = 'http://127.0.0.1:8001/api/modelos-multiactivo'
+const API = `${API_BASE_URL}/api/modelos-multiactivo`
 
 type Metricas = {
   observaciones?: number

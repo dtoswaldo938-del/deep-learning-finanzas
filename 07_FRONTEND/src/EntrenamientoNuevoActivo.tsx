@@ -1,6 +1,7 @@
+import { API_BASE_URL } from './apiConfig'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-const API = 'http://127.0.0.1:8001/api/entrenamiento-activos'
+const API = `${API_BASE_URL}/api/entrenamiento-activos`
 
 type Estado = {
   estado: string
@@ -76,7 +77,7 @@ export default function EntrenamientoNuevoActivo({ simbolo, tieneModelo, onModel
     async function cargarHistorial() {
       try {
         const respuesta = await fetch(
-          `http://127.0.0.1:8001/api/modelos-multiactivo/vigencia?simbolo=${encodeURIComponent(simbolo)}`,
+          `${API_BASE_URL}/api/modelos-multiactivo/vigencia?simbolo=${encodeURIComponent(simbolo)}`,
           { signal: controlador.signal },
         )
         if (!respuesta.ok) return

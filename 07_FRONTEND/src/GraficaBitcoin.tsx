@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './apiConfig'
 
 import { useEffect, useMemo, useState } from 'react'
 import {
@@ -38,7 +39,7 @@ type Props = {
   simbolo?: string
 }
 
-const API = 'http://127.0.0.1:8001'
+const API = `${API_BASE_URL}`
 
 function nombreVisible(simbolo: string): string {
   if (simbolo.endsWith('USDT')) {

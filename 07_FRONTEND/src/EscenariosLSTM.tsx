@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './apiConfig'
 
 import { useEffect, useState } from 'react'
 
@@ -32,7 +33,7 @@ type RespuestaEscenarios = {
   operaciones_reales: boolean
 }
 
-const API = 'http://127.0.0.1:8001'
+const API = `${API_BASE_URL}`
 
 // Actualizar los escenarios cada 60 segundos.
 const INTERVALO_ACTUALIZACION = 60000

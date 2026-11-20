@@ -1,7 +1,8 @@
+import { API_BASE_URL } from './apiConfig'
 
 import { useCallback, useEffect, useState } from 'react'
 
-const API_BASE = 'http://127.0.0.1:8001'
+const API_BASE = `${API_BASE_URL}`
 
 type Resumen = {
   total_predicciones: number

@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './apiConfig'
 
 import { Suspense, lazy, useCallback, useEffect, useState } from 'react'
 import './App.css'
@@ -95,7 +96,7 @@ function App() {
   const actualizarModelos = useCallback(() => setRevisionModelos(n => n + 1), [])
   useEffect(() => {
     let activo = true
-    fetch('http://127.0.0.1:8001/api/modelos-multiactivo/disponibles')
+    fetch(`${API_BASE_URL}/api/modelos-multiactivo/disponibles`)
       .then(r => { if (!r.ok) throw new Error('API no disponible'); return r.json() })
       .then(datos => { if (activo && Array.isArray(datos.simbolos)) setModelos(datos.simbolos) })
       .catch(() => { /* El panel seguirá mostrando la opción de entrenar */ })

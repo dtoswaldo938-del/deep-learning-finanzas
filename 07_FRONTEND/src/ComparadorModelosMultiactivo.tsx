@@ -1,10 +1,11 @@
+import { API_BASE_URL } from './apiConfig'
 import { useEffect, useMemo, useState } from 'react'
 import {
   Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip,
   XAxis, YAxis,
 } from 'recharts'
 
-const API = 'http://127.0.0.1:8001/api/modelos-multiactivo'
+const API = `${API_BASE_URL}/api/modelos-multiactivo`
 const AZUL = '#37c6ff'
 const VIOLETA = '#a78bfa'
 const VERDE = '#45e0b3'

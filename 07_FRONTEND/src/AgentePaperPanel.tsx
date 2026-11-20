@@ -1,7 +1,8 @@
+import { API_BASE_URL } from './apiConfig'
 import { useCallback, useEffect, useState } from 'react'
 import './AgentePaperPanel.css'
 
-const API = 'http://127.0.0.1:8001/api/agente-paper'
+const API = `${API_BASE_URL}/api/agente-paper`
 
 type Modo = 'ACTIVO' | 'PAUSADO' | 'DETENIDO'
 type Estado = { modo: Modo; saldo: number; unidades: number; simbolo: string; ultima_actualizacion: string }

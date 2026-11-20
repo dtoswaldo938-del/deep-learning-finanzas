@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './apiConfig'
 
 import { useEffect, useMemo, useState } from 'react'
 import './LSTMTemporalExplorer.css'
@@ -30,7 +31,7 @@ type DatosTemporales = {
   rendimiento_estimado_porcentaje: number
 }
 
-const API = 'http://127.0.0.1:8001'
+const API = `${API_BASE_URL}`
 
 function validarDatos(
   valor: unknown

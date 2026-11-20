@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './apiConfig'
 
 import { useEffect, useState } from 'react'
 import './NeuralPredictionPanel.css'
@@ -27,7 +28,7 @@ type RespuestaEvaluaciones = {
   predicciones: Prediccion[]
 }
 
-const API = 'http://127.0.0.1:8001'
+const API = `${API_BASE_URL}`
 
 export default function NeuralPredictionPanel() {
   const [datos, setDatos] =

@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './apiConfig'
 
 import { useEffect, useState } from 'react'
 
@@ -27,7 +28,7 @@ type Historial = {
   movimientos: Movimiento[]
 }
 
-const API = 'http://127.0.0.1:8001'
+const API = `${API_BASE_URL}`
 
 function CapitalVirtual() {
   const [capital, setCapital] = useState<Capital | null>(null)

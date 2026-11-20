@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './apiConfig'
 
 import { useEffect, useState } from 'react'
 import {
@@ -16,7 +17,7 @@ import {
 } from 'recharts'
 
 const API_URL =
-  'http://127.0.0.1:8001/api/mexc/evaluaciones-lstm'
+  `${API_BASE_URL}/api/mexc/evaluaciones-lstm`
 
 const COLOR_ESTIMADO = '#38bdf8'
 const COLOR_OBSERVADO = '#f59e0b'

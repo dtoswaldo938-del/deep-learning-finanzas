@@ -1,8 +1,9 @@
+import { API_BASE_URL } from './apiConfig'
 
 import { useEffect, useState } from 'react'
 
 const API_URL =
-  'http://127.0.0.1:8001/api/mexc/estado-actualizacion-lstm'
+  `${API_BASE_URL}/api/mexc/estado-actualizacion-lstm`
 
 type EstadoMonitor = {
   activo: boolean

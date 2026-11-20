@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './apiConfig'
 
 import { useEffect, useState } from 'react'
 import './LSTMArchitectureExplorer.css'
@@ -21,7 +22,7 @@ type ArchitectureData = {
 
 type Stage = 'input' | 'lstm' | 'output'
 
-const API = 'http://127.0.0.1:8001'
+const API = `${API_BASE_URL}`
 
 const stages: {
   id: Stage

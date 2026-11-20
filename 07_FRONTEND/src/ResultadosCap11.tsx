@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './apiConfig'
 
 import { useEffect, useState } from 'react'
 import {
@@ -41,7 +42,7 @@ type DatosProtocolo = {
   protocolo: Protocolo
 }
 
-const API = 'http://127.0.0.1:8001'
+const API = `${API_BASE_URL}`
 
 function nombreModelo(nombre: string) {
   const nombres: Record<string, string> = {

@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './apiConfig'
 
 import { useEffect, useMemo, useState } from 'react'
 
@@ -19,7 +20,7 @@ type Props = {
   onCambiar: (simbolo: string) => void
 }
 
-const API = 'http://127.0.0.1:8001'
+const API = `${API_BASE_URL}`
 
 export default function SelectorActivosMEXC({
   simbolo,

@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './apiConfig'
 import { useEffect, useRef, useState } from 'react'
 import './NeuralNetwork.css'
 
@@ -31,7 +32,7 @@ type DireccionMercado = 'up' | 'down' | 'neutral'
 type ModoVisual = 'market' | 'lstm'
 type Props = { simbolo?: string }
 
-const API = 'http://127.0.0.1:8001'
+const API = `${API_BASE_URL}`
 
 // Una sola salida. Esta constelación es una visualización, no la arquitectura LSTM real.
 const capas = [5, 8, 10, 8, 5, 1]

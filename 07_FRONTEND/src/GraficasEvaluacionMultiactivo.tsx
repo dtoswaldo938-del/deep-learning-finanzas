@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './apiConfig'
 import { useEffect, useState } from 'react'
 
 type Observacion = { fecha: string; real: number; estimado: number; base_cero: number; error: number }
@@ -7,7 +8,7 @@ type Respuesta = {
   coincidencia_metricas: boolean; periodo: { inicio: string; fin: string }
   metricas: { lstm: Metricas; base_cero: Metricas }; advertencia: string
 }
-const API = 'http://127.0.0.1:8001'
+const API = `${API_BASE_URL}`
 const formato = (n: number, d = 4) => n.toFixed(d)
 const estilo: React.CSSProperties = { background: '#101c30', color: '#d8e8fb', border: '1px solid #315575', borderRadius: 14, padding: 20, marginBottom: 18 }
 

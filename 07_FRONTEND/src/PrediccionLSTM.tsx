@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './apiConfig'
 
 import { useEffect, useState } from 'react'
 
@@ -24,7 +25,7 @@ function PrediccionLSTM() {
     async function consultarPrediccion() {
       try {
         const respuesta = await fetch(
-          'http://127.0.0.1:8001/api/prediccion-lstm'
+          `${API_BASE_URL}/api/prediccion-lstm`
         )
 
         if (!respuesta.ok) {

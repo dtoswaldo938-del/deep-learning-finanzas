@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './apiConfig'
 
 import { useEffect, useState } from 'react'
 import {
@@ -26,7 +27,7 @@ function ComparacionModelos() {
     async function cargarModelos() {
       try {
         const respuesta = await fetch(
-          'http://127.0.0.1:8001/modelos/comparacion'
+          `${API_BASE_URL}/modelos/comparacion`
         )
 
         if (!respuesta.ok) {

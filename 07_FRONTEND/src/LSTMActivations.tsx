@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './apiConfig'
 
 import { useEffect, useState } from 'react'
 import './LSTMActivations.css'
@@ -19,7 +20,7 @@ type DatosLSTM = {
   rendimiento_estimado_porcentaje: number
 }
 
-const API = 'http://127.0.0.1:8001'
+const API = `${API_BASE_URL}`
 
 export default function LSTMActivations({ simbolo = 'BTCUSDT' }: { simbolo?: string }) {
   const [datos, setDatos] = useState<DatosLSTM | null>(null)
