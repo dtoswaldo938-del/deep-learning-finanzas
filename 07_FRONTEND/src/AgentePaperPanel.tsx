@@ -1,3 +1,4 @@
+import ExplicacionIAPanel from './ExplicacionIAPanel'
 import MexcAutenticacionPanel from './MexcAutenticacionPanel'
 import MexcConexionPanel from './MexcConexionPanel'
 import RendimientoPaperPanel from './RendimientoPaperPanel'
@@ -100,6 +101,7 @@ export default function AgentePaperPanel() {
       {mensaje && <p className="agente-message" role="status">{mensaje}</p>}
       <MexcConexionPanel />
       <MexcAutenticacionPanel />
+      <ExplicacionIAPanel />
       {datos && estado && <>
         <div className="agente-kpis">
           <div className="agente-kpi"><span>Estado actual</span><strong className={`agente-status ${estado.modo.toLowerCase()}`}>{estado.modo}</strong><small>Revisión automática cada {datos.intervalo_revision_segundos / 60} minutos</small></div>
