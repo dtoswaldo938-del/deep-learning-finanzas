@@ -22,6 +22,7 @@ import {
 } from './liveTradingEngine'
 
 type Modo = 'VIVO' | 'ACELERADO'
+const MAX_EDAD_COTIZACION_MS = 5000
 type Punto = { tiempo: string; patrimonio: number; precio: number }
 
 const REFERENCIAS: PreciosLab = {
@@ -42,6 +43,9 @@ export default function LiveTradingLab() {
   const [estado, setEstado] = useState(crearEstadoInicial)
   const [precios, setPrecios] = useState<PreciosLab>(REFERENCIAS)
   const [cotizados, setCotizados] = useState<ActivoLab[]>([])
+  const [ultimaCotizacion, setUltimaCotizacion] = useState<number | null>(null)
+  const [reloj, setReloj] = useState(Date.now())
+  const ultimaCotizacionRef = useRef<number | null>(null)
   const [importe, setImporte] = useState('1000')
   const [mensaje, setMensaje] = useState('')
   const [historia, setHistoria] = useState<Punto[]>([])
@@ -51,6 +55,14 @@ export default function LiveTradingLab() {
   const preciosRef = useRef(precios)
 
   useEffect(() => { estadoRef.current = estado }, [estado])
+
+  useEffect(() => {
+    const intervalo = window.setInterval(() => {
+      setReloj(Date.now())
+    }, 1000)
+
+    return () => window.clearInterval(intervalo)
+  }, [])
   useEffect(() => { preciosRef.current = precios }, [precios])
 
   useEffect(() => {
@@ -89,11 +101,17 @@ export default function LiveTradingLab() {
         const nuevos = Object.fromEntries(resultados) as PreciosLab
         preciosRef.current = nuevos
         setPrecios(nuevos)
+        const ahora = Date.now()
+        ultimaCotizacionRef.current = ahora
+        setUltimaCotizacion(ahora)
         setCotizados([...ACTIVOS_LAB])
         setMensaje('')
       } catch {
         if (activoEfecto) {
-          setMensaje('Cotizaciones no disponibles. No se actualizaron los precios.')
+          ultimaCotizacionRef.current = null
+          setUltimaCotizacion(null)
+          setCotizados([])
+          setMensaje('Conexion interrumpida. Operaciones ficticias bloqueadas hasta recuperar precios.')
         }
       } finally {
         ocupado = false
@@ -133,7 +151,14 @@ export default function LiveTradingLab() {
   useEffect(() => {
     const intervalo = window.setInterval(() => {
       try {
-        if (modo === 'VIVO' && cotizados.length !== ACTIVOS_LAB.length) return
+        if (modo === 'VIVO') {
+          const ultima = ultimaCotizacionRef.current
+          if (
+            cotizados.length !== ACTIVOS_LAB.length ||
+            ultima === null ||
+            Date.now() - ultima > MAX_EDAD_COTIZACION_MS
+          ) return
+        }
         const patrimonio = calcularPatrimonio(
           estadoRef.current,
           preciosRef.current,
@@ -154,8 +179,12 @@ export default function LiveTradingLab() {
     return () => window.clearInterval(intervalo)
   }, [activo, modo, cotizados])
 
+  const cotizacionReciente =
+    ultimaCotizacion !== null &&
+    reloj - ultimaCotizacion <= MAX_EDAD_COTIZACION_MS
+
   const precioDisponible =
-    modo === 'ACELERADO' || cotizados.includes(activo)
+    modo === 'ACELERADO' || (cotizacionReciente && cotizados.includes(activo))
 
   let patrimonio = estado.efectivo
   let patrimonioValido = true
@@ -163,10 +192,13 @@ export default function LiveTradingLab() {
   try {
     if (
       modo === 'VIVO' &&
-      ACTIVOS_LAB.some(
+      (
+        !cotizacionReciente ||
+        ACTIVOS_LAB.some(
         simbolo =>
           estado.posiciones[simbolo] > 0 &&
           !cotizados.includes(simbolo),
+        )
       )
     ) {
       patrimonioValido = false
@@ -179,7 +211,15 @@ export default function LiveTradingLab() {
 
   function operar(tipo: 'COMPRA' | 'VENTA') {
     try {
-      if (!precioDisponible) {
+      const vigenteAhora =
+        modo === 'ACELERADO' ||
+        (
+          ultimaCotizacionRef.current !== null &&
+          Date.now() - ultimaCotizacionRef.current <= MAX_EDAD_COTIZACION_MS &&
+          cotizados.includes(activo)
+        )
+
+      if (!vigenteAhora) {
         throw new Error('Espera una cotizacion valida.')
       }
 
@@ -207,6 +247,8 @@ export default function LiveTradingLab() {
     preciosRef.current = REFERENCIAS
     setEstado(inicial)
     setPrecios(REFERENCIAS)
+    ultimaCotizacionRef.current = null
+    setUltimaCotizacion(null)
     setCotizados([])
     setHistoria([])
     setMensaje('')
@@ -276,6 +318,31 @@ export default function LiveTradingLab() {
             ? 'MEXC · Datos publicos'
             : 'Secuencia ficticia · Demostracion'}
         </p>
+
+        {modo === 'VIVO' && (
+          <div className="lab-connection-status">
+            <strong style={{
+              color: precioDisponible ? '#34d399' : '#f87171',
+            }}>
+              {precioDisponible
+                ? 'Cotizacion reciente disponible'
+                : 'Esperando cotizacion reciente'}
+            </strong>
+
+            <p>
+              Ultima actualizacion: {
+                ultimaCotizacion !== null
+                  ? new Date(ultimaCotizacion).toLocaleTimeString('es-MX')
+                  : 'Sin datos'
+              }
+            </p>
+
+            <p className="lab-muted">
+              Las operaciones ficticias requieren precios recibidos
+              durante los ultimos cinco segundos.
+            </p>
+          </div>
+        )}
       </section>
 
       <section
@@ -400,7 +467,7 @@ export default function LiveTradingLab() {
                 const metricas = calcularMetricasPosicion(estado, simbolo, precios[simbolo])
                 const disponible =
                   modo === 'ACELERADO' ||
-                  cotizados.includes(simbolo)
+                  (cotizacionReciente && cotizados.includes(simbolo))
 
                 return (
                   <tr key={simbolo}>
@@ -492,6 +559,9 @@ export default function LiveTradingLab() {
     </div>
   )
 }
+
+
+
 
 
 
