@@ -1,4 +1,4 @@
-﻿export type ActivoLab = 'BTCUSDT' | 'ETHUSDT' | 'SOLUSDT'
+export type ActivoLab = string
 export type TipoOperacion = 'COMPRA' | 'VENTA'
 
 export type PosicionesLab = Record<ActivoLab, number>
@@ -31,11 +31,7 @@ export const ACTIVOS_LAB: ActivoLab[] = [
 export function crearEstadoInicial(): EstadoLab {
   return {
     efectivo: CAPITAL_INICIAL,
-    posiciones: {
-      BTCUSDT: 0,
-      ETHUSDT: 0,
-      SOLUSDT: 0,
-    },
+    posiciones: {},
     operaciones: [],
   }
 }
@@ -44,8 +40,7 @@ export function calcularPatrimonio(
   estado: EstadoLab,
   precios: Partial<PreciosLab>,
 ): number {
-  return ACTIVOS_LAB.reduce((total, activo) => {
-    const cantidad = estado.posiciones[activo]
+  return Object.entries(estado.posiciones).reduce((total, [activo, cantidad]) => {
     const precio = precios[activo]
 
     if (cantidad > 0 && (
@@ -85,7 +80,7 @@ export function ejecutarOperacion(
 
   if (
     tipo === 'VENTA' &&
-    cantidad > estado.posiciones[activo] + 1e-10
+    cantidad > (estado.posiciones[activo] ?? 0) + 1e-10
   ) {
     throw new Error('No tienes suficiente activo para vender.')
   }
@@ -97,8 +92,8 @@ export function ejecutarOperacion(
 
   const nuevaCantidad =
     tipo === 'COMPRA'
-      ? estado.posiciones[activo] + cantidad
-      : estado.posiciones[activo] - cantidad
+      ? (estado.posiciones[activo] ?? 0) + cantidad
+      : (estado.posiciones[activo] ?? 0) - cantidad
 
   const operacion: OperacionLab = {
     id: crypto.randomUUID(),

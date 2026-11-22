@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   CartesianGrid,
   Line,
@@ -8,10 +8,14 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { API_BASE_URL } from './apiConfig'
+import {
+  activosParaCotizar,
+  consultarPreciosLab,
+} from './liveTradingCotizaciones'
+
+import SelectorActivosLab from './SelectorActivosLab'
 import './LiveTradingLab.css'
 import {
-  ACTIVOS_LAB,
   CAPITAL_INICIAL,
   calcularPatrimonio,
   calcularMetricasPosicion,
@@ -53,6 +57,10 @@ export default function LiveTradingLab() {
   const paso = useRef(0)
   const estadoRef = useRef(estado)
   const preciosRef = useRef(precios)
+  const activoRef = useRef(activo)
+  const modoRef = useRef(modo)
+  const cotizadosRef = useRef(cotizados)
+  const [versionPosiciones, setVersionPosiciones] = useState(0)
 
   useEffect(() => { estadoRef.current = estado }, [estado])
 
@@ -64,6 +72,9 @@ export default function LiveTradingLab() {
     return () => window.clearInterval(intervalo)
   }, [])
   useEffect(() => { preciosRef.current = precios }, [precios])
+  useEffect(() => { activoRef.current = activo }, [activo])
+  useEffect(() => { modoRef.current = modo }, [modo])
+  useEffect(() => { cotizadosRef.current = cotizados }, [cotizados])
 
   useEffect(() => {
     if (modo !== 'VIVO') return
@@ -77,41 +88,45 @@ export default function LiveTradingLab() {
       ocupado = true
 
       try {
-        const resultados = await Promise.all(
-          ACTIVOS_LAB.map(async simbolo => {
-            const r = await fetch(
-              `${API_BASE_URL}/api/mexc/precio-por-simbolo?simbolo=${simbolo}`,
-              { cache: 'no-store', signal: controlador.signal },
-            )
-            if (!r.ok) throw new Error('Sin cotizacion')
-            const d = await r.json()
-            if (
-              d.status !== 'ok' ||
-              d.activo !== simbolo ||
-              !Number.isFinite(Number(d.precio)) ||
-              Number(d.precio) <= 0
-            ) throw new Error('Cotizacion invalida')
-
-            return [simbolo, Number(d.precio)] as const
-          }),
+        const simbolos = activosParaCotizar(
+          activoRef.current,
+          estadoRef.current,
         )
 
-        if (!activoEfecto) return
+        const nuevos = await consultarPreciosLab(
+          simbolos,
+          controlador.signal,
+        )
 
-        const nuevos = Object.fromEntries(resultados) as PreciosLab
+        if (!activoEfecto || modoRef.current !== 'VIVO') return
+
+        const simbolosActuales = activosParaCotizar(
+          activoRef.current,
+          estadoRef.current,
+        )
+
+        if (simbolosActuales.some(s => !(s in nuevos))) {
+          ultimaCotizacionRef.current = null
+          setUltimaCotizacion(null)
+          setCotizados([])
+          return
+        }
+
+        const ahora = Date.now()
         preciosRef.current = nuevos
         setPrecios(nuevos)
-        const ahora = Date.now()
         ultimaCotizacionRef.current = ahora
         setUltimaCotizacion(ahora)
-        setCotizados([...ACTIVOS_LAB])
+        setCotizados(simbolos)
         setMensaje('')
       } catch {
         if (activoEfecto) {
           ultimaCotizacionRef.current = null
           setUltimaCotizacion(null)
           setCotizados([])
-          setMensaje('Conexion interrumpida. Operaciones ficticias bloqueadas hasta recuperar precios.')
+          setMensaje(
+            'Conexion interrumpida. Operaciones ficticias bloqueadas hasta recuperar precios.',
+          )
         }
       } finally {
         ocupado = false
@@ -126,8 +141,35 @@ export default function LiveTradingLab() {
       controlador.abort()
       window.clearInterval(intervalo)
     }
-  }, [modo])
+  }, [modo, activo, versionPosiciones])
+  useEffect(() => {
+    if (modo !== 'ACELERADO') return
 
+    const simbolos = activosParaCotizar(activo, estado)
+    const actualizados: PreciosLab = { ...preciosRef.current }
+    let hayCambios = false
+
+    for (const simbolo of simbolos) {
+      const precio = actualizados[simbolo]
+
+      if (Number.isFinite(precio) && precio > 0) continue
+
+      const semilla = [...simbolo].reduce(
+        (total, caracter) => total + caracter.charCodeAt(0),
+        0,
+      )
+
+      actualizados[simbolo] =
+        REFERENCIAS[simbolo] ?? (1 + (semilla % 10000) / 100)
+
+      hayCambios = true
+    }
+
+    if (hayCambios) {
+      preciosRef.current = actualizados
+      setPrecios(actualizados)
+    }
+  }, [modo, activo, estado])
   useEffect(() => {
     if (modo !== 'ACELERADO' || !reproduciendo) return
 
@@ -135,10 +177,27 @@ export default function LiveTradingLab() {
       paso.current += 1
       const t = paso.current
 
-      const nuevos: PreciosLab = {
-        BTCUSDT: 60000 * (1 + 0.025 * Math.sin(t / 5)),
-        ETHUSDT: 3000 * (1 + 0.035 * Math.sin(t / 7)),
-        SOLUSDT: 150 * (1 + 0.045 * Math.sin(t / 4)),
+      const simbolos = activosParaCotizar(
+        activoRef.current,
+        estadoRef.current,
+      )
+
+      const nuevos: PreciosLab = {}
+
+      for (const simbolo of simbolos) {
+        const semilla = [...simbolo].reduce(
+          (total, caracter) => total + caracter.charCodeAt(0),
+          0,
+        )
+
+        const base = REFERENCIAS[simbolo] ??
+          (1 + (semilla % 10000) / 100)
+
+        const amplitud = 0.02 + (semilla % 4) * 0.005
+        const frecuencia = 4 + (semilla % 7)
+
+        nuevos[simbolo] =
+          base * (1 + amplitud * Math.sin(t / frecuencia))
       }
 
       preciosRef.current = nuevos
@@ -147,22 +206,36 @@ export default function LiveTradingLab() {
 
     return () => window.clearInterval(intervalo)
   }, [modo, reproduciendo])
-
   useEffect(() => {
     const intervalo = window.setInterval(() => {
       try {
         if (modo === 'VIVO') {
           const ultima = ultimaCotizacionRef.current
           if (
-            cotizados.length !== ACTIVOS_LAB.length ||
+                        activosParaCotizar(
+              activoRef.current,
+              estadoRef.current,
+            ).some(simbolo => !cotizados.includes(simbolo)) ||
             ultima === null ||
             Date.now() - ultima > MAX_EDAD_COTIZACION_MS
           ) return
         }
+        const simbolosNecesarios = activosParaCotizar(
+          activoRef.current,
+          estadoRef.current,
+        )
+
+        if (simbolosNecesarios.some(simbolo => {
+          const precio = preciosRef.current[simbolo]
+          return !Number.isFinite(precio) || precio <= 0
+        })) return
+
         const patrimonio = calcularPatrimonio(
           estadoRef.current,
           preciosRef.current,
         )
+
+        if (!Number.isFinite(patrimonio)) return
         setHistoria(anterior => [
           ...anterior.slice(-59),
           {
@@ -183,8 +256,17 @@ export default function LiveTradingLab() {
     ultimaCotizacion !== null &&
     reloj - ultimaCotizacion <= MAX_EDAD_COTIZACION_MS
 
+  const precioActual = precios[activo]
+
+  const precioValido =
+    Number.isFinite(precioActual) && precioActual > 0
+
   const precioDisponible =
-    modo === 'ACELERADO' || (cotizacionReciente && cotizados.includes(activo))
+    precioValido &&
+    (
+      modo === 'ACELERADO' ||
+      (cotizacionReciente && cotizados.includes(activo))
+    )
 
   let patrimonio = estado.efectivo
   let patrimonioValido = true
@@ -194,10 +276,9 @@ export default function LiveTradingLab() {
       modo === 'VIVO' &&
       (
         !cotizacionReciente ||
-        ACTIVOS_LAB.some(
-        simbolo =>
-          estado.posiciones[simbolo] > 0 &&
-          !cotizados.includes(simbolo),
+        Object.entries(estado.posiciones).some(
+          ([simbolo, cantidad]) =>
+            cantidad > 0 && !cotizados.includes(simbolo),
         )
       )
     ) {
@@ -212,11 +293,14 @@ export default function LiveTradingLab() {
   function operar(tipo: 'COMPRA' | 'VENTA') {
     try {
       const vigenteAhora =
-        modo === 'ACELERADO' ||
+        precioValido &&
         (
-          ultimaCotizacionRef.current !== null &&
-          Date.now() - ultimaCotizacionRef.current <= MAX_EDAD_COTIZACION_MS &&
-          cotizados.includes(activo)
+          modo === 'ACELERADO' ||
+          (
+            ultimaCotizacionRef.current !== null &&
+            Date.now() - ultimaCotizacionRef.current <= MAX_EDAD_COTIZACION_MS &&
+            cotizados.includes(activo)
+          )
         )
 
       if (!vigenteAhora) {
@@ -232,6 +316,7 @@ export default function LiveTradingLab() {
       )
       estadoRef.current = siguiente
       setEstado(siguiente)
+      setVersionPosiciones(v => v + 1)
       setMensaje(`${tipo} ficticia registrada correctamente.`)
     } catch (error) {
       setMensaje(
@@ -260,6 +345,7 @@ export default function LiveTradingLab() {
     const inicial = crearEstadoInicial()
     estadoRef.current = inicial
     setEstado(inicial)
+    setVersionPosiciones(v => v + 1)
     setHistoria([])
     setMensaje('Laboratorio reiniciado.')
   }
@@ -295,17 +381,28 @@ export default function LiveTradingLab() {
       <section className="dashboard-card">
         <h2>Seleccion de activo</h2>
 
-        <select
-          value={activo}
-          onChange={e => {
-            setActivo(e.target.value as ActivoLab)
+        <SelectorActivosLab
+          activo={activo}
+          onSeleccionar={simbolo => {
+            setActivo(simbolo)
+            activoRef.current = simbolo
+            if (modo === 'ACELERADO') {
+              const semilla = [...simbolo].reduce(
+                (total, caracter) => total + caracter.charCodeAt(0),
+                0,
+              )
+              const precio = REFERENCIAS[simbolo] ??
+                (1 + (semilla % 10000) / 100)
+              const nuevos = { ...preciosRef.current, [simbolo]: precio }
+              preciosRef.current = nuevos
+              setPrecios(nuevos)
+            }
+            ultimaCotizacionRef.current = null
+            setUltimaCotizacion(null)
+            setCotizados([])
             setHistoria([])
           }}
-        >
-          {ACTIVOS_LAB.map(s => (
-            <option key={s} value={s}>{s}</option>
-          ))}
-        </select>
+        />
 
         <h2>
           {precioDisponible
@@ -356,7 +453,7 @@ export default function LiveTradingLab() {
           ['Saldo disponible', formato(estado.efectivo)],
           ['Patrimonio total', patrimonioValido ? formato(patrimonio) : 'Sin cotizacion'],
           ['Resultado ficticio', patrimonioValido ? formato(patrimonio - CAPITAL_INICIAL) : 'Sin cotizacion'],
-          ['Unidades del activo', estado.posiciones[activo].toFixed(6)],
+          ['Unidades del activo', (estado.posiciones[activo] ?? 0).toFixed(6)],
         ].map(([titulo, valor]) => (
           <div key={titulo} className="dashboard-card">
             <p>{titulo}</p>
@@ -462,12 +559,18 @@ export default function LiveTradingLab() {
               </tr>
             </thead>
             <tbody>
-              {ACTIVOS_LAB.map(simbolo => {
-                const cantidad = estado.posiciones[simbolo]
+              {Object.keys(estado.posiciones).map(simbolo => {
+                const cantidad = estado.posiciones[simbolo] ?? 0
                 const metricas = calcularMetricasPosicion(estado, simbolo, precios[simbolo])
+                const precioPosicion = precios[simbolo]
+
                 const disponible =
-                  modo === 'ACELERADO' ||
-                  (cotizacionReciente && cotizados.includes(simbolo))
+                  Number.isFinite(precioPosicion) &&
+                  precioPosicion > 0 &&
+                  (
+                    modo === 'ACELERADO' ||
+                    (cotizacionReciente && cotizados.includes(simbolo))
+                  )
 
                 return (
                   <tr key={simbolo}>
@@ -559,11 +662,3 @@ export default function LiveTradingLab() {
     </div>
   )
 }
-
-
-
-
-
-
-
-

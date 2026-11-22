@@ -1,4 +1,4 @@
-﻿.live-lab {
+.live-lab {
   color: #e2e8f0;
 }
 
@@ -109,4 +109,48 @@
   .live-lab .lab-toolbar button {
     flex: 1 1 140px;
   }
+}
+
+/* Selector dinamico de activos */
+
+.lab-selector-dinamico {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 230px;
+}
+
+.lab-selector-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.lab-selector-tabs button {
+  padding: 8px 12px;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  background: #172033;
+  color: #e2e8f0;
+  cursor: pointer;
+}
+
+.lab-selector-tabs button[aria-pressed="true"] {
+  border-color: #38bdf8;
+  background: #164e63;
+}
+
+.lab-selector-dinamico input,
+.lab-selector-dinamico select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+.lab-selector-dinamico .lab-muted {
+  font-size: 12px;
+  opacity: 0.75;
 }
