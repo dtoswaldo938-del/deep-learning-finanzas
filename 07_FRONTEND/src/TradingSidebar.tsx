@@ -1,4 +1,4 @@
-
+﻿
 type Seccion =
   | 'overview'
   | 'neural'
@@ -8,6 +8,7 @@ type Seccion =
   | 'analytics'
   | 'laboratory'
   | 'agent'
+  | 'live-trading'
 
 type Props = {
   seccionActual: Seccion
@@ -50,6 +51,10 @@ const secciones: {
     nombre: 'Análisis de modelos',
   },
   {
+    id: 'live-trading',
+    icono: '◉',
+    nombre: 'Live Trading Lab',
+  },  {
     id: 'agent',
     icono: '◉',
     nombre: 'Agente IA · Paper',
@@ -134,3 +139,4 @@ export default function TradingSidebar({
     </aside>
   )
 }
+

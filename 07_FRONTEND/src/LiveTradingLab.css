@@ -1,0 +1,112 @@
+﻿.live-lab {
+  color: #e2e8f0;
+}
+
+.live-lab button,
+.live-lab select,
+.live-lab input {
+  font: inherit;
+}
+
+.live-lab button {
+  background: #172b47;
+  color: #e0f2fe;
+  border: 1px solid #365577;
+  border-radius: 9px;
+  padding: 11px 17px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.live-lab button:hover:not(:disabled) {
+  background: #23466c;
+  transform: translateY(-1px);
+}
+
+.live-lab button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.live-lab button:focus-visible,
+.live-lab select:focus-visible,
+.live-lab input:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 3px;
+}
+
+.live-lab select,
+.live-lab input {
+  background: #101d32;
+  color: #f8fafc;
+  border: 1px solid #365577;
+  border-radius: 9px;
+  padding: 11px 13px;
+  max-width: 100%;
+}
+
+.live-lab .lab-toolbar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.live-lab .lab-price {
+  font-size: clamp(28px, 4vw, 43px);
+  font-weight: 800;
+  color: #38bdf8;
+  margin: 15px 0;
+}
+
+.live-lab .lab-buy {
+  background: #065f46;
+  border-color: #059669;
+  color: #ecfdf5;
+}
+
+.live-lab .lab-buy:hover:not(:disabled) {
+  background: #047857;
+}
+
+.live-lab .lab-sell {
+  background: #7f1d1d;
+  border-color: #dc2626;
+  color: #fef2f2;
+}
+
+.live-lab .lab-sell:hover:not(:disabled) {
+  background: #991b1b;
+}
+
+.live-lab .lab-muted {
+  color: #94a3b8;
+}
+
+.live-lab .lab-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid #365577;
+  border-radius: 999px;
+  font-size: 12px;
+  color: #7dd3fc;
+}
+
+.live-lab .lab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+}
+
+.live-lab .lab-grid .dashboard-card {
+  margin-bottom: 0;
+}
+
+@media (max-width: 700px) {
+  .live-lab .lab-toolbar button {
+    flex: 1 1 140px;
+  }
+}

@@ -1,4 +1,4 @@
-import MonitorGeneralMEXC from './MonitorGeneralMEXC'
+﻿import MonitorGeneralMEXC from './MonitorGeneralMEXC'
 import { API_BASE_URL } from './apiConfig'
 
 import { Suspense, lazy, useCallback, useEffect, useState } from 'react'
@@ -18,6 +18,7 @@ const LSTMArchitectureExplorer = lazy(() => import('./LSTMArchitectureExplorer')
 const LSTMTemporalExplorer = lazy(() => import('./LSTMTemporalExplorer'))
 const LSTMActivations = lazy(() => import('./LSTMActivations'))
 const AgentePaperPanel = lazy(() => import('./AgentePaperPanel'))
+const LiveTradingLab = lazy(() => import('./LiveTradingLab'))
 
 const GraficaBitcoin = lazy(() => import('./GraficaBitcoin'))
 const ComparacionModelos = lazy(() => import('./ComparacionModelos'))
@@ -50,6 +51,7 @@ type Seccion =
   | 'analytics'
   | 'laboratory'
   | 'agent'
+  | 'live-trading'
 
 const titulos: Record<Seccion, string> = {
   overview: 'Resumen general',
@@ -59,6 +61,7 @@ const titulos: Record<Seccion, string> = {
   portfolio: 'Portafolio virtual',
   analytics: 'Análisis de modelos',
   laboratory: 'Laboratorio de IA',
+  'live-trading': 'Live Trading Lab',
   agent: 'Agente IA · Paper Trading',
 }
 
@@ -77,6 +80,7 @@ const descripciones: Record<Seccion, string> = {
     'Resultados históricos y análisis de los modelos.',
   laboratory:
     'Entrena y administra modelos LSTM experimentales por criptomoneda.',
+  'live-trading': 'Simulador educativo de mercado y patrimonio ficticio.',
   agent:
     'Decisiones LSTM + Ollama, controles y capital ficticio independiente.',
 }
@@ -392,6 +396,9 @@ function App() {
               )}
             </div>
           )}
+          {seccionActual === 'live-trading' && (
+            <LiveTradingLab />
+          )}
           {seccionActual === 'agent' && (
             <AgentePaperPanel />
           )}
@@ -446,3 +453,4 @@ function App() {
 }
 
 export default App
+
