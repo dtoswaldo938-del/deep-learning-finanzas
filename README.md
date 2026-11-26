@@ -337,3 +337,40 @@ Para abrir la vista previa:
 
 Las pruebas utilizan ejemplos controlados y operaciones
 ficticias, sin modificar cuentas de exchanges.
+
+<!-- EVIDENCIAS_849 -->
+
+## Informes tecnicos de entrega
+
+- [Evaluacion predictiva](05_BITACORAS/INFORME_MODELOS_PREDICTIVOS.md)
+- [Riesgos y alcance](05_BITACORAS/INFORME_RIESGOS_Y_ALCANCE.md)
+- [Informe financiero](05_BITACORAS/INFORME_FINANCIERO.md)
+- [Flujo del sistema](05_BITACORAS/FLUJO_DEL_SISTEMA.md)
+- [Replay historico](05_BITACORAS/INFORME_REPLAY_FINAL.md)
+
+## Disponibilidad de modelos
+
+El entorno de desarrollo cuenta con 35 modelos multiactivo.
+La version publicada contiene 9 modelos.
+
+## Indicadores tecnicos
+
+El dashboard incluye SMA20, EMA20 y RSI14.
+
+## Decisiones de alcance
+
+- Operaciones reales: excluidas por seguridad y finalidad academica.
+- Polymarket: se selecciono MEXC como proveedor principal.
+- Apalancamiento: excluido para mantener el alcance educativo.
+- Sistema multiagente: se utiliza Ollama como modelo local.
+- WebSocket: se eligio la consulta periodica de datos publicos.
+
+Las limitaciones y riesgos se explican en los informes
+tecnicos correspondientes.
+
+## Autoevaluacion del proyecto
+
+- [Evaluacion de la rubrica](05_BITACORAS/EVALUACION_RUBRICA.md)
+
+La evaluacion describe las funcionalidades disponibles,
+sus evidencias y las limitaciones del prototipo academico.
