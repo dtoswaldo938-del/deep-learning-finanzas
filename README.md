@@ -77,7 +77,7 @@ Los modelos entrenados necesarios deben estar disponibles en `06_BACKEND/modelos
 Clonar el repositorio y entrar en su carpeta:
 
 ```powershell
-git clone https://github.com/dtoswaldo938-del/deep-learning-finanzas.git
+git clone -b integracion-mexc-demo https://github.com/dtoswaldo938-del/deep-learning-finanzas.git
 cd deep-learning-finanzas
 ```
 
@@ -337,20 +337,3 @@ Para abrir la vista previa:
 
 Las pruebas utilizan ejemplos controlados y operaciones
 ficticias, sin modificar cuentas de exchanges.
-
-<!-- ALCANCE_786 -->
-
-## Alcance de la entrega academica
-
-La entrega incluye el codigo fuente del sistema principal,
-la documentacion tecnica y las pruebas automatizadas.
-
-Los modelos adicionales generados localmente durante
-la experimentacion no forman parte de este commit.
-
-Paper Research Lab permanece como desarrollo independiente.
-
-Las operaciones y resultados financieros son simulados.
-
-Las notificaciones son demostraciones academicas locales.
-La preparacion de correos requiere intervencion manual.
