@@ -1,0 +1,104 @@
+.nf-notificaciones {
+  color: #e2e8f0;
+  background: #0b1220;
+  border: 1px solid #263449;
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.nf-notificaciones header small {
+  color: #38bdf8;
+  letter-spacing: 2px;
+}
+
+.nf-notificaciones header p {
+  color: #94a3b8;
+}
+
+.nf-notificaciones-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.nf-notificaciones-kpis article,
+.nf-notificaciones-lista article {
+  background: #111b2c;
+  border: 1px solid #263449;
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.nf-notificaciones-kpis span {
+  display: block;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.nf-notificaciones-kpis strong {
+  display: block;
+  color: #38bdf8;
+  font-size: 26px;
+  margin-top: 8px;
+}
+
+.nf-notificaciones-controles {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.nf-notificaciones-controles button {
+  background: #16283e;
+  color: #e2e8f0;
+  border: 1px solid #38bdf8;
+  border-radius: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+.nf-notificaciones-lista {
+  display: grid;
+  gap: 12px;
+}
+
+.nf-notificaciones-lista .pendiente {
+  border-left: 4px solid #38bdf8;
+}
+
+.nf-notificaciones-lista small,
+.nf-notificaciones-lista time {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.nf-notificaciones-lista h3 {
+  margin: 8px 0;
+}
+
+@media (max-width: 700px) {
+  .nf-notificaciones-kpis {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* CORREO_762 */
+
+.nf-correo-demo {
+  display: inline-block;
+  color: #38bdf8;
+  background: #16283e;
+  border: 1px solid #263449;
+  border-radius: 6px;
+  padding: 7px 12px;
+  margin: 8px 12px 8px 0;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.nf-correo-demo:hover {
+  border-color: #38bdf8;
+  background: #1e3a50;
+}

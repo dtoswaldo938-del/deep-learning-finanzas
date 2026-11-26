@@ -117,3 +117,9 @@ NeuralNetwork_173_6.tsx
 # Archivos auxiliares antiguos
 07_FRONTEND/src/*BACKUP*
 06_BACKEND/app/*.bak*
+
+# ARCHIVOS_LOCALES_736
+*.bak[0-9]*
+.neural_finance_procesos.json
+.neural_finance_procesos.json.*
+*.tsbuildinfo

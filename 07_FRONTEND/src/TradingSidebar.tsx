@@ -1,4 +1,4 @@
-﻿
+
 type Seccion =
   | 'overview'
   | 'neural'
@@ -9,6 +9,7 @@ type Seccion =
   | 'laboratory'
   | 'agent'
   | 'live-trading'
+  | 'notifications'
 
 type Props = {
   seccionActual: Seccion
@@ -20,6 +21,11 @@ const secciones: {
   icono: string
   nombre: string
 }[] = [
+  {
+    id: 'notifications',
+    icono: '◌',
+    nombre: 'Notificaciones',
+  },
   {
     id: 'overview',
     icono: '◈',
@@ -139,4 +145,3 @@ export default function TradingSidebar({
     </aside>
   )
 }
-

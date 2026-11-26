@@ -1,4 +1,4 @@
-﻿import MonitorGeneralMEXC from './MonitorGeneralMEXC'
+import MonitorGeneralMEXC from './MonitorGeneralMEXC'
 import { API_BASE_URL } from './apiConfig'
 
 import { Suspense, lazy, useCallback, useEffect, useState } from 'react'
@@ -19,6 +19,7 @@ const LSTMTemporalExplorer = lazy(() => import('./LSTMTemporalExplorer'))
 const LSTMActivations = lazy(() => import('./LSTMActivations'))
 const AgentePaperPanel = lazy(() => import('./AgentePaperPanel'))
 const LiveTradingLab = lazy(() => import('./LiveTradingLab'))
+const NotificacionesPanel = lazy(() => import('./NotificacionesPanel'))
 
 const GraficaBitcoin = lazy(() => import('./GraficaBitcoin'))
 const ComparacionModelos = lazy(() => import('./ComparacionModelos'))
@@ -52,6 +53,7 @@ type Seccion =
   | 'laboratory'
   | 'agent'
   | 'live-trading'
+  | 'notifications'
 
 const titulos: Record<Seccion, string> = {
   overview: 'Resumen general',
@@ -62,6 +64,7 @@ const titulos: Record<Seccion, string> = {
   analytics: 'Análisis de modelos',
   laboratory: 'Laboratorio de IA',
   'live-trading': 'Live Trading Lab',
+  notifications: 'Centro de notificaciones',
   agent: 'Agente IA · Paper Trading',
 }
 
@@ -81,6 +84,7 @@ const descripciones: Record<Seccion, string> = {
   laboratory:
     'Entrena y administra modelos LSTM experimentales por criptomoneda.',
   'live-trading': 'Simulador educativo de mercado y patrimonio ficticio.',
+  notifications: 'Historial de eventos de demostracion academica.',
   agent:
     'Decisiones LSTM + Ollama, controles y capital ficticio independiente.',
 }
@@ -396,6 +400,10 @@ function App() {
               )}
             </div>
           )}
+          {seccionActual === 'notifications' && (
+            <NotificacionesPanel />
+          )}
+
           {seccionActual === 'live-trading' && (
             <LiveTradingLab />
           )}
@@ -453,4 +461,3 @@ function App() {
 }
 
 export default App
-
