@@ -192,30 +192,15 @@ function App() {
                 </p>
               </div>
 
-              <div className="trading-overview-grid">
+              <div className="trading-overview-grid overview-market-layout">
                 <PrecioMEXC
                   simbolo={simbolo}
                 />
 
-                <CapitalVirtual />
+                <GraficaBitcoin
+                  simbolo={simbolo}
+                />
               </div>
-
-              <p
-                style={{
-                  fontSize: 12,
-                  color: '#8ba8cf',
-                }}
-              >
-                El capital virtual corresponde
-                a una cuenta académica general
-                en MXN. No representa una
-                posición comprada en{' '}
-                {simboloVisible}.
-              </p>
-
-              <GraficaBitcoin
-                simbolo={simbolo}
-              />
 
               {esBitcoin ? (
                 <PrediccionMEXC />

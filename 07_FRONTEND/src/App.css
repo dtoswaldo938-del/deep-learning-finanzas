@@ -589,3 +589,22 @@
   background: #195277 !important;
   border-color: #38bdf8 !important;
 }
+
+
+/* Distribucion compacta del resumen general */
+.trading-overview-grid.overview-market-layout {
+  grid-template-columns: minmax(240px, 3fr) minmax(0, 7fr);
+  align-items: start;
+  gap: 16px;
+}
+
+.overview-market-layout > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 1100px) {
+  .trading-overview-grid.overview-market-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
